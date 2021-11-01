@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:rtt_nurse_app/rrt_widgets/button.dart';
-import 'package:rtt_nurse_app/rrt_widgets/textfield.dart';
-import 'package:rtt_nurse_app/ui/auth/rtt_nurse_login.dart';
-import 'package:rtt_nurse_app/ui/payment/rtt_nurse_billing_information.dart';
-import 'package:rtt_nurse_app/utils/rrt_colors.dart';
-import 'package:rtt_nurse_app/utils/rtt_routes.dart';
+import 'package:rtt_nurse_app/constants/custom_snackbar.dart';
+import 'package:rtt_nurse_app/constants/rrt_colors.dart';
+import 'package:rtt_nurse_app/constants/utils/auth_exception_handler.dart';
+import 'package:rtt_nurse_app/controllers/authentication/auth_controller.dart';
 import 'package:rtt_nurse_app/utils/rtt_textstyle.dart';
+import 'package:rtt_nurse_app/view/rrt_widgets/button.dart';
+import 'package:rtt_nurse_app/view/rrt_widgets/textfield.dart';
+
+import 'rtt_nurse_login.dart';
 
 class RegisterAccount extends StatefulWidget {
   @override
@@ -14,17 +17,16 @@ class RegisterAccount extends StatefulWidget {
 }
 
 class _RegisterAccountState extends State<RegisterAccount> {
-  TextEditingController? fNameController = TextEditingController();
+  final fNameController = TextEditingController();
+  final lNameController = TextEditingController();
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+  final confirmpasswordController = TextEditingController();
 
-  TextEditingController? lNameController = TextEditingController();
-
-  TextEditingController? emailController = TextEditingController();
-
-  TextEditingController? passwordController = TextEditingController();
-
-  TextEditingController? confirmpasswordController = TextEditingController();
+  final authController = Get.find<AuthController>();
 
   late String _passwordError;
+
   GlobalKey<FormState> formkey = GlobalKey<FormState>();
   bool validateAndSaveUser() {
     final form = formkey.currentState;
@@ -33,6 +35,27 @@ class _RegisterAccountState extends State<RegisterAccount> {
       return true;
     } else {
       return false;
+    }
+  }
+
+  void tryRegister() async {
+    //Login user on auth request
+    final status = await authController.createUser(
+      emailController.text.trim(),
+      passwordController.text,
+      fNameController.text,
+      lNameController.text,
+    );
+    if (status == AuthResultStatus.successful) {
+      Get.back();
+      CustomSnackBar.showSnackBar(
+          title: "Account created Successfully",
+          message: '',
+          backgroundColor: snackBarSuccess);
+    } else {
+      final errorMsg = AuthExceptionHandler.generateExceptionMessage(status);
+      CustomSnackBar.showSnackBar(
+          title: errorMsg, message: '', backgroundColor: snackBarError);
     }
   }
 
@@ -114,7 +137,7 @@ class _RegisterAccountState extends State<RegisterAccount> {
                             (value) {
                               Pattern pattern =
                                   r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
-                              RegExp regex = new RegExp(pattern as String);
+                              RegExp regex = RegExp(pattern as String);
                               return (!regex.hasMatch(value!))
                                   ? "Please Enter Valid Email"
                                   : null;
@@ -151,9 +174,13 @@ class _RegisterAccountState extends State<RegisterAccount> {
                             true,
                             TextInputType.name,
                             (value) {
-                              return (value!.isEmpty)
-                                  ? "Password can't be Empity"
-                                  : null;
+                              if (value.isEmpty) {
+                                return 'Confirm Password cannot be Empity';
+                              }
+                              if (value != passwordController.text) {
+                                return 'Password Not Match';
+                              }
+                              return null;
                             },
                           ),
                         ),
@@ -163,17 +190,17 @@ class _RegisterAccountState extends State<RegisterAccount> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text(
+                            const Text(
                               "Already have an account? ",
                               style: TextStyle(color: Colors.grey),
                             ),
                             GestureDetector(
                               onTap: () {
-                                AppRoutes.push(context, Login());
+                                Get.off(Login());
                               },
                               child: Container(
                                 padding: EdgeInsets.symmetric(vertical: 8.0.w),
-                                child: Text(
+                                child: const Text(
                                   "Log In",
                                   style: TextStyle(
                                     color: Color(0xfffc6359),
@@ -196,9 +223,14 @@ class _RegisterAccountState extends State<RegisterAccount> {
                           textStyle: WhiteText,
                           onPressed: () {
                             if (validateAndSaveUser()) {
-                              AppRoutes.push(context, UserBillingInformation());
+                              print("Avuth ready");
+                              tryRegister();
                             } else {
-                              print("1");
+                              CustomSnackBar.showSnackBar(
+                                  title: "Please fill all blanks",
+                                  message: '',
+                                  backgroundColor: Colors.red);
+                              debugPrint("auth error");
                             }
                           },
                         ),
@@ -217,3 +249,52 @@ class _RegisterAccountState extends State<RegisterAccount> {
     );
   }
 }
+// InkWell(
+//   // onTap: () {
+//   //   Get.to(UserBillingInformation());
+//   // },
+//   onTap: () {
+//     if (fNameController!.text.length < 1 ||
+//         emailController!.text.endsWith(".com") == false ||
+//         passwordController!.text.length < 1 ||
+//         confirmpasswordController!.text.length < 1 ||
+//         lNameController!.text.length < 1) {
+//       _passwordError = "Enter atleast";
+//     } else
+//       Get.to(UserBillingInformation());
+//   },
+
+// child: Container(
+//   alignment: Alignment.center,
+//   width: MediaQuery.of(context).size.width * 0.2,
+//   padding: const EdgeInsets.symmetric(vertical: 15.0),
+//   decoration: BoxDecoration(
+//       color: const Color(0xfffc6359),
+//       borderRadius: BorderRadius.circular(30.0)),
+//   child: const Text(
+//     'Next',
+//     style: TextStyle(color: Colors.white),
+//   ),
+// ),
+//),
+// InkWell(
+//   onTap: () {
+//     Get.to(UserBillingInformation());
+//   },
+//   child: Padding(
+//     padding: EdgeInsets.symmetric(horizontal: 120.w),
+//     child: Container(
+//       alignment: Alignment.center,
+//       // height: 65.h,
+//       width: width,
+//       padding: EdgeInsets.symmetric(vertical: 15.0.h),
+//       decoration: BoxDecoration(
+//           color: Color(0xfffc6359),
+//           borderRadius: BorderRadius.circular(30.0.sp)),
+//       child: Text(
+//         'Next',
+//         style: TextStyle(color: Colors.white),
+//       ),
+//     ),
+//   ),
+// )

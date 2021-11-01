@@ -2,14 +2,16 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
-import 'package:rtt_nurse_app/rrt_widgets/button.dart';
-import 'package:rtt_nurse_app/rrt_widgets/textfield.dart';
-import 'package:rtt_nurse_app/ui/auth/rtt_nurse_login.dart';
-import 'package:rtt_nurse_app/ui/homescreen/home_screen.dart';
+
 import 'package:rtt_nurse_app/utils/rrt_colors.dart';
 import 'package:rtt_nurse_app/utils/rtt_routes.dart';
 import 'package:rtt_nurse_app/utils/rtt_textstyle.dart';
+import 'package:rtt_nurse_app/view/rrt_widgets/button.dart';
+import 'package:rtt_nurse_app/view/rrt_widgets/textfield.dart';
+import 'package:rtt_nurse_app/view/ui/auth/rtt_nurse_login.dart';
+import 'package:rtt_nurse_app/view/ui/homescreen/home_screen.dart';
 
+// ignore: must_be_immutable
 class UserBillingInformation extends StatelessWidget {
   TextEditingController? cardNumberController = TextEditingController();
   TextEditingController? cardHolderNameController = TextEditingController();

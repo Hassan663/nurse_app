@@ -1,14 +1,14 @@
 import 'package:easy_sidemenu/easy_sidemenu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:rtt_nurse_app/rrt_widgets/update_account.dart';
-import 'package:rtt_nurse_app/ui/homescreen/dashboard_screens/capture_picture.dart';
-import 'package:rtt_nurse_app/ui/homescreen/dashboard_screens/change_password.dart';
-import 'package:rtt_nurse_app/ui/homescreen/dashboard_screens/help.dart';
-import 'package:rtt_nurse_app/ui/homescreen/dashboard_screens/home_dashboard.dart';
-import 'package:rtt_nurse_app/ui/homescreen/dashboard_screens/results.dart';
-import 'package:rtt_nurse_app/ui/homescreen/dashboard_screens/schedule_appointment.dart';
-import 'package:rtt_nurse_app/ui/homescreen/dashboard_screens/upload_document.dart';
+
+import 'dashboard_screens/capture_picture.dart';
+import 'dashboard_screens/change_password.dart';
+import 'dashboard_screens/help.dart';
+import 'dashboard_screens/home_dashboard.dart';
+import 'dashboard_screens/schedule_appointment.dart';
+import 'dashboard_screens/update_account.dart';
+import 'dashboard_screens/upload_document.dart';
 
 class HomePage extends StatefulWidget {
   // HomePage({Key? key,}) : super(key: key);

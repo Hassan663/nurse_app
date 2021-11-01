@@ -27,6 +27,32 @@
   <link rel="manifest" href="manifest.json">
 </head>
 <body>
+  <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.14.4/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.17.1/firebase-analytics.js"></script>
+  <script type="module">
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.1.3/firebase-app.js";
+    // TODO: Add SDKs for Firebase products that you want to use
+    // https://firebase.google.com/docs/web/setup#available-libraries
+  
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyBKa59ZucwIkYqNJ4d2UjjrcSIejDgFuC8",
+      authDomain: "covidtest-37a4b.firebaseapp.com",
+      projectId: "covidtest-37a4b",
+      storageBucket: "covidtest-37a4b.appspot.com",
+      messagingSenderId: "437989698400",
+      appId: "1:437989698400:web:0c6a7b1591ee8906224c05",
+      measurementId: "G-X9CJHV81ML"
+    };
+
+    // Initialize Firebase
+   // Initialize Firebase
+   firebase.initializeApp(firebaseConfig);
+    const app = initializeApp(firebaseConfig);
+  </script>
   <!-- This script installs service_worker.js to provide PWA functionality to
        application. For more information, see:
        https://developers.google.com/web/fundamentals/primers/service-workers -->

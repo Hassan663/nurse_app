@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:rtt_nurse_app/rrt_widgets/button.dart';
-import 'package:rtt_nurse_app/rrt_widgets/textfield.dart';
-import 'package:rtt_nurse_app/ui/homescreen/home_screen.dart';
+
 import 'package:rtt_nurse_app/utils/rtt_routes.dart';
 import 'package:rtt_nurse_app/utils/rtt_textstyle.dart';
+import 'package:rtt_nurse_app/view/rrt_widgets/button.dart';
+import 'package:rtt_nurse_app/view/rrt_widgets/textfield.dart';
+import 'package:rtt_nurse_app/view/ui/homescreen/home_screen.dart';
 
 class ForgotPassword extends StatefulWidget {
   @override

@@ -15,9 +15,8 @@ class Header extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Welcome Client!',
-                style:
-                    TextStyle(fontWeight: FontWeight.w700, fontSize: 25.sp),
+                'Welcome Nurse!',
+                style: TextStyle(fontWeight: FontWeight.w700, fontSize: 25.sp),
               ),
               SizedBox(
                 height: 5.h,
@@ -31,15 +30,14 @@ class Header extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   CircleAvatar(
-                    child: IconButton(
-                        onPressed: () {}, icon: Icon(Icons.person)),
+                    child:
+                        IconButton(onPressed: () {}, icon: Icon(Icons.person)),
                   ),
                   IconButton(
                       onPressed: () {},
                       icon: Icon(Icons.notifications_none_outlined)),
                   IconButton(
-                      onPressed: () {},
-                      icon: Icon(Icons.power_settings_new)),
+                      onPressed: () {}, icon: Icon(Icons.power_settings_new)),
                 ],
               )
             ],

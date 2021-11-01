@@ -1,12 +1,19 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:date_format/date_format.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:rtt_nurse_app/rrt_widgets/button.dart';
-import 'package:rtt_nurse_app/rrt_widgets/header.dart';
-import 'package:rtt_nurse_app/rrt_widgets/textfield.dart';
+import 'package:rtt_nurse_app/controllers/authentication/auth_controller.dart';
+import 'package:rtt_nurse_app/controllers/service/database.dart';
+import 'package:rtt_nurse_app/models/authentication/avalibleSlots.dart';
+import 'package:rtt_nurse_app/models/authentication/schedule.dart';
+
 import 'package:rtt_nurse_app/utils/rrt_colors.dart';
 import 'package:rtt_nurse_app/utils/rrt_sizes.dart';
 import 'package:rtt_nurse_app/utils/rtt_textstyle.dart';
+import 'package:rtt_nurse_app/view/rrt_widgets/button.dart';
+import 'package:rtt_nurse_app/view/rrt_widgets/header.dart';
+import 'package:rtt_nurse_app/view/rrt_widgets/textfield.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -25,14 +32,16 @@ class _SetAvailabilityState extends State<SetAvailability> {
     double width = MediaQuery.of(context).size.width;
     TextEditingController? availablefromController = TextEditingController();
     TextEditingController? availabletoController = TextEditingController();
+    final authController = Get.find<AuthController>();
 
     CalendarFormat _calendarFormat = CalendarFormat.month;
     RangeSelectionMode _rangeSelectionMode = RangeSelectionMode
         .toggledOff; // Can be toggled on/off by longpressing a date
     DateTime _focusedDay = DateTime.now();
-
-    DateTime? _rangeStart;
-    DateTime? _rangeEnd;
+    TimeOfDay selectedTime = TimeOfDay.now();
+    TimeOfDay selectedTime1 = TimeOfDay.now();
+    String from1 = "From";
+    String to = "to";
 
     var formatted = formatDate(DateTime.now(), [mm]);
     var formatted1;
@@ -40,7 +49,6 @@ class _SetAvailabilityState extends State<SetAvailability> {
     @override
     void initState() {
       super.initState();
-
       _selectedDay = _focusedDay;
       //_selectedEvents = ValueNotifier(_getEventsForDay(_selectedDay!));
     }
@@ -91,8 +99,8 @@ class _SetAvailabilityState extends State<SetAvailability> {
       setState(() {
         _selectedDay = null;
         _focusedDay = focusedDay;
-        _rangeStart = start;
-        _rangeEnd = end;
+        // _rangeStart = start;
+        // _rangeEnd = end;
         _rangeSelectionMode = RangeSelectionMode.toggledOn;
       });
     }
@@ -112,9 +120,9 @@ class _SetAvailabilityState extends State<SetAvailability> {
             child: Column(
               children: [
                 Header(),
-                SizedBox(
-                  height: 35.h,
-                ),
+                // SizedBox(
+                //   height: 35.h,
+                // ),
                 Row(
                   children: [
                     Padding(
@@ -238,8 +246,7 @@ class _SetAvailabilityState extends State<SetAvailability> {
                               decoration: new BoxDecoration(
                                   boxShadow: [
                                     BoxShadow(
-                                      color: Colors.grey.withOpacity(0.3),
-                                      spreadRadius: 2,
+                                      //  startSlotspreadRadius: 2,
                                       blurRadius: 10,
                                       offset: Offset(
                                           0, 3), // changes position of shadow
@@ -284,24 +291,22 @@ class _SetAvailabilityState extends State<SetAvailability> {
                                     width: 200.w,
                                     child: textformfield1(
                                       availablefromController,
-                                      "Available From",
-                                      "From",
+                                      "Available To",
+                                      "To",
                                       false,
                                       TextInputType.name,
                                     ),
                                   ),
                                 ),
-                                Text(
-                                  "To",
-                                  style: TextStyle(
-                                      color: Colors.red,
-                                      fontWeight: FontWeight.w700),
-                                ),
+                                Text("To",
+                                    style: TextStyle(
+                                        color: Colors.red,
+                                        fontWeight: FontWeight.w700)),
                                 Flexible(
                                   child: Container(
                                     width: 200.w,
                                     child: textformfield1(
-                                      availablefromController,
+                                      availabletoController,
                                       "Available To",
                                       "To",
                                       false,
@@ -310,7 +315,33 @@ class _SetAvailabilityState extends State<SetAvailability> {
                                   ),
                                 )
                               ],
-                            )
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(bottom: 10.h),
+                              child: CircularButtons(
+                                backgroundColor: const Color(0xfffc6359),
+                                borderColor: const Color(0xfffc6359),
+                                text: "Save",
+                                height: 40,
+                                width: width * 0.1,
+                                onPressed: () {
+                                  setState(() {
+                                    Slots s = Slots(
+                                        startSlot: availablefromController.text
+                                            .toString(),
+                                        endSlot: availabletoController.text
+                                            .toString());
+                                    authController.selectedSlot.add(s);
+                                    print(authController.selectedSlot.length);
+                                    availablefromController.clear();
+                                    availabletoController.clear();
+                                  });
+                                },
+                                textColor: Colors.white,
+                                textStyle: TextStyle(
+                                    fontSize: 17, fontWeight: FontWeight.w600),
+                              ),
+                            ),
                           ],
                         ),
                       ),
@@ -384,7 +415,19 @@ class _SetAvailabilityState extends State<SetAvailability> {
                                               MainAxisAlignment.spaceBetween,
                                           children: [
                                             ElevatedButton(
-                                                onPressed: () {},
+                                                onPressed: () {
+                                                  print(
+                                                      "length : ${authController.selectedSlot.length}");
+                                                  Database()
+                                                      .createAppoitmentInDatabase(
+                                                    Schedule(
+                                                      date: _selectedDay,
+                                                      slots: authController
+                                                          .selectedSlot,
+                                                    ),
+                                                  );
+                                                  Get.back();
+                                                },
                                                 child: Text(
                                                   "Confirm",
                                                   style: GoogleFonts.inter(
@@ -440,6 +483,22 @@ class _SetAvailabilityState extends State<SetAvailability> {
                         TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
                   ),
                 ),
+                authController.selectedSlot.length != 0
+                    ? Container(
+                        height: 50,
+                        width: 200,
+                        child: ListView.builder(
+                            itemCount: authController.selectedSlot.length,
+                            itemBuilder: (context, index) {
+                              return Text(authController
+                                      .selectedSlot[index].startSlot
+                                      .toString() +
+                                  " : " +
+                                  authController.selectedSlot[index].endSlot
+                                      .toString());
+                            }),
+                      )
+                    : Container()
               ],
             ),
           )),

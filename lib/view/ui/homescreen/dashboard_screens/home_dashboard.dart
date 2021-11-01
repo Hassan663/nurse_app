@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_timer_countdown/flutter_timer_countdown.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:rtt_nurse_app/rrt_widgets/header.dart';
 import 'package:rtt_nurse_app/utils/rrt_colors.dart';
 import 'package:rtt_nurse_app/utils/rrt_sizes.dart';
+import 'package:rtt_nurse_app/view/rrt_widgets/header.dart';
 
 class HomeDashboard extends StatelessWidget {
   @override

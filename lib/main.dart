@@ -1,17 +1,21 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get_navigation/src/root/get_material_app.dart';
-import 'package:rtt_nurse_app/ui/auth/rtt_nurse_login.dart';
-import 'package:rtt_nurse_app/ui/homescreen/home_screen.dart';
-import 'package:rtt_nurse_app/ui/payment/rtt_nurse_billing_information.dart';
+import 'package:get/get.dart';
+import 'controllers/authentication/auth_controller.dart';
+import 'view/ui/auth/auth_decider.dart';
 
-void main() {
-  runApp(MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  Get.put(AuthController());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
+  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
@@ -21,9 +25,9 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        home: HomePage(),
+        home: AuthDecider(),
       ),
-      designSize: Size(1920, 1080),
+      designSize: const Size(1920, 1080),
     );
   }
 }
