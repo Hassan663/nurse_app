@@ -1,9 +1,7 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:rrt_client_web_app/models/appointment/available_appointments.dart';
-import 'package:rrt_client_web_app/models/appointment/schedule.dart';
+import 'package:rtt_nurse_app/models/appointment/available_appointments.dart';
 
-class AppointmentDatabase{
+class AppointmentDatabase {
   final FirebaseFirestore _fireStore = FirebaseFirestore.instance;
 
   Stream<List<AvailableAppointments>> getAllPost() {
@@ -19,5 +17,4 @@ class AppointmentDatabase{
       return retVal;
     });
   }
-
 }

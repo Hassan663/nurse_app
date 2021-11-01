@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:date_format/date_format.dart';
 import 'package:flutter/material.dart';
@@ -421,7 +423,9 @@ class _SetAvailabilityState extends State<SetAvailability> {
                                                   Database()
                                                       .createAppoitmentInDatabase(
                                                     Schedule(
-                                                      date: _selectedDay,
+                                                      date: _selectedDay == null
+                                                          ? DateTime.now()
+                                                          : _selectedDay,
                                                       slots: authController
                                                           .selectedSlot,
                                                     ),
