@@ -1,13 +1,22 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_timer_countdown/flutter_timer_countdown.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:rtt_nurse_app/controllers/appointment/appointment_controller.dart';
 import 'package:rtt_nurse_app/utils/rrt_colors.dart';
 import 'package:rtt_nurse_app/utils/rrt_sizes.dart';
 import 'package:rtt_nurse_app/view/rrt_widgets/header.dart';
 
-class HomeDashboard extends StatelessWidget {
+class HomeDashboard extends StatefulWidget {
+  @override
+  State<HomeDashboard> createState() => _HomeDashboardState();
+}
+
+class _HomeDashboardState extends State<HomeDashboard> {
+  final appointmentController = Get.find<AppointmentController>();
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -63,14 +72,16 @@ class HomeDashboard extends StatelessWidget {
               width: MediaQuery.of(context).size.width,
               child: Padding(
                 padding: EdgeInsets.all(12.0.sp),
-                child: GridView.builder(
+                child: Obx(() => GridView.builder(
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 4,
                         //childAspectRatio: 3.w / 3.h,
                         crossAxisSpacing: 20.w,
                         mainAxisSpacing: 10.h),
-                    itemCount: 12,
+                    itemCount:
+                        appointmentController.availableAppointments.length,
                     itemBuilder: (BuildContext ctx, index) {
+                      DateTime date = DateTime.fromMillisecondsSinceEpoch(appointmentController.availableAppointments[index].reqCreatedAt!.seconds * 1000);
                       return Padding(
                         padding: EdgeInsets.all(8.0.sp),
                         child: SingleChildScrollView(
@@ -100,15 +111,20 @@ class HomeDashboard extends StatelessWidget {
                                           Padding(
                                             padding:
                                                 EdgeInsets.only(left: 20.w),
-                                            child: Text(
-                                              "Patient $index",
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis,
-                                              style: GoogleFonts.inter(
-                                                  fontSize: 20.sp,
-                                                  fontStyle: FontStyle.normal,
-                                                  fontWeight: FontWeight.w600,
-                                                  color: Colors.white),
+                                            child: Container(
+                                              width: 150,
+                                              child: Text(
+                                                "Patient: ${appointmentController.availableAppointments[index].firstName} ${appointmentController.availableAppointments[index].lastName}",
+                                                overflow:
+                                                TextOverflow.ellipsis,
+                                                softWrap: true,
+                                                maxLines: 1,
+                                                style: GoogleFonts.inter(
+                                                    fontSize: 20.sp,
+                                                    fontStyle: FontStyle.normal,
+                                                    fontWeight: FontWeight.w600,
+                                                    color: Colors.white),
+                                              ),
                                             ),
                                           ),
                                         ],
@@ -133,14 +149,17 @@ class HomeDashboard extends StatelessWidget {
                                               width: 25.w,
                                               child: Image.asset(
                                                   "assets/datetime.png")),
-                                          Text(
-                                            "Fri, May 23, 10:00 am - 11:00 am",
-                                            overflow: TextOverflow.ellipsis,
-                                            style: GoogleFonts.inter(
-                                                fontSize: 15.sp,
-                                                fontStyle: FontStyle.normal,
-                                                fontWeight: FontWeight.w500,
-                                                color: Colors.white),
+                                          Container(
+                                            width: 150,
+                                            child: Text(
+                                              "${date.day}-${date.month}-${date.year}",
+                                              overflow: TextOverflow.ellipsis,
+                                              style: GoogleFonts.inter(
+                                                  fontSize: 15.sp,
+                                                  fontStyle: FontStyle.normal,
+                                                  fontWeight: FontWeight.w500,
+                                                  color: Colors.white),
+                                            ),
                                           )
                                         ],
                                       ),
@@ -434,7 +453,7 @@ class HomeDashboard extends StatelessWidget {
                           ),
                         ),
                       );
-                    }),
+                    })),
               ),
             )
           ],

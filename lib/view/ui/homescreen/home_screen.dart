@@ -1,6 +1,8 @@
 import 'package:easy_sidemenu/easy_sidemenu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
+import 'package:rtt_nurse_app/controllers/appointment/appointment_controller.dart';
 
 import 'dashboard_screens/capture_picture.dart';
 import 'dashboard_screens/change_password.dart';
@@ -21,6 +23,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   PageController page = PageController();
+  final appointmentController = Get.put(AppointmentController());
 
   @override
   Widget build(BuildContext context) {

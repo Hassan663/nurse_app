@@ -20,7 +20,6 @@ class AuthModel {
       this.role});
 
   AuthModel.fromDocumentSnapshot(DocumentSnapshot doc) {
-    debugPrint(doc.data().toString());
     uid = doc.id;
     firstName = doc['firstName'];
     lastName = doc['lastName'];
