@@ -22,8 +22,8 @@ class HomePage extends StatefulWidget {
   _HomePageState createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
-  PageController page = PageController();
+class _HomePageState extends State<HomePage>with AutomaticKeepAliveClientMixin {
+  PageController page = PageController(keepPage: true);
   final appointmentController = Get.put(AppointmentController());
 
   @override
@@ -147,4 +147,8 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
+
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
 }

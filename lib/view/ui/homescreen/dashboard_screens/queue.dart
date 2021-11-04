@@ -13,7 +13,7 @@ class Queue extends StatefulWidget {
   _QueueState createState() => _QueueState();
 }
 
-class _QueueState extends State<Queue> {
+class _QueueState extends State<Queue>with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
@@ -262,4 +262,8 @@ class _QueueState extends State<Queue> {
               ]))),
     );
   }
+
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
 }

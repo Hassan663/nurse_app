@@ -19,6 +19,7 @@ import 'package:rtt_nurse_app/view/rrt_widgets/textfield.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:time_range_picker/time_range_picker.dart';
 
 String month = formatDate(DateTime.now(), [mm]);
 String day = formatDate(DateTime.now(), [dd]);
@@ -29,7 +30,7 @@ class SetAvailability extends StatefulWidget {
   _SetAvailabilityState createState() => _SetAvailabilityState();
 }
 
-class _SetAvailabilityState extends State<SetAvailability> {
+class _SetAvailabilityState extends State<SetAvailability>with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
@@ -40,10 +41,8 @@ class _SetAvailabilityState extends State<SetAvailability> {
     CalendarFormat _calendarFormat = CalendarFormat.month;
     RangeSelectionMode _rangeSelectionMode = RangeSelectionMode.toggledOff;
     DateTime _focusedDay = DateTime.now();
-    TimeOfDay selectedTime = TimeOfDay.now();
-    TimeOfDay selectedTime1 = TimeOfDay.now();
-    String from1 = "From";
-    String to = "to";
+    TimeOfDay startingTimeRange = TimeOfDay.now();
+    TimeOfDay endingTimeRange = TimeOfDay.now();
 
     var formatted = formatDate(DateTime.now(), [mm]);
     var formatted1;
@@ -62,9 +61,8 @@ class _SetAvailabilityState extends State<SetAvailability> {
     List<Meeting> _getDataSource() {
       final List<Meeting> meetings = <Meeting>[];
       final DateTime today = DateTime.now();
-      final DateTime startTime =
-          DateTime(today.year, today.month, today.day, 9, 0, 0);
-      final DateTime endTime = startTime.add(const Duration(hours: 2));
+      final DateTime startTime = DateTime(today.year, today.month, today.day, startingTimeRange.hour, startingTimeRange.minute, 0);
+      final DateTime endTime = DateTime(today.year, today.month, today.day, endingTimeRange.hour, endingTimeRange.minute, 0);
       meetings.add(Meeting(
         startTime,
         endTime,
@@ -86,6 +84,7 @@ class _SetAvailabilityState extends State<SetAvailability> {
       'nov',
       'dec'
     ];
+
     void _onDaySelected(DateTime selectedDay, DateTime focusedDay) {
       if (!isSameDay(_selectedDay, selectedDay)) {
         setState(() {
@@ -172,8 +171,8 @@ class _SetAvailabilityState extends State<SetAvailability> {
                                       0, 3), // changes position of shadow
                                 ),
                               ],
-                              color: Colors
-                                  .white, //new Color.fromRGBO(255, 0, 0, 0.0),
+                              color: Colors.white,
+                              //new Color.fromRGBO(255, 0, 0, 0.0),
                               borderRadius: new BorderRadius.all(
                                 Radius.circular(5),
                               )),
@@ -263,42 +262,105 @@ class _SetAvailabilityState extends State<SetAvailability> {
                                   SizedBox(
                                     height: 30,
                                   ),
-                                  Container(
-                                    decoration: new BoxDecoration(
-                                        boxShadow: [
-                                          BoxShadow(
-                                            //  startSlotspreadRadius: 2,
-                                            blurRadius: 10,
-                                            offset: Offset(0,
-                                                3), // changes position of shadow
+                                  GestureDetector(
+                                    onTap: () {
+                                      showTimeRangePicker(
+                                        context: context,
+                                        start: TimeOfDay(hour: 22, minute: 9),
+                                        onStartChange: (start) {
+                                          print("start time " +
+                                              start.toString());
+
+                                          availablefromController.text = "${start.hour}:${start.minute == 0 ? "00" : start.minute} ${start.period.index == 0 ? "AM" : "PM"}";
+                                          startingTimeRange = start;
+                                        },
+                                        onEndChange: (end) {
+                                          print("end time " + end.toString());
+                                          availabletoController.text ="${end.hour}:${end.minute == 0 ? "00" : end.minute} ${end.period.index == 0 ? "AM" : "PM"}";
+                                          endingTimeRange = end;
+                                        },
+                                        interval: Duration(minutes: 30),
+                                        use24HourFormat: false,
+                                        padding: 30,
+                                        strokeWidth: 20,
+                                        handlerRadius: 14,
+                                        strokeColor: Colors.orange,
+                                        handlerColor: Colors.orange[700],
+                                        selectedColor: Colors.amber,
+                                        backgroundColor:
+                                            Colors.black.withOpacity(0.3),
+                                        ticks: 12,
+                                        ticksColor: Colors.white,
+                                        snap: true,
+                                        labels: [
+                                          "12 pm",
+                                          "3 am",
+                                          "6 am",
+                                          "9 am",
+                                          "12 am",
+                                          "3 pm",
+                                          "6 pm",
+                                          "9 pm"
+                                        ].asMap().entries.map((e) {
+                                          return ClockLabel.fromIndex(
+                                              idx: e.key,
+                                              length: 8,
+                                              text: e.value);
+                                        }).toList(),
+                                        labelOffset: -30,
+                                        labelStyle: TextStyle(
+                                            fontSize: 22,
+                                            color: Colors.grey,
+                                            fontWeight: FontWeight.bold),
+                                        timeTextStyle: TextStyle(
+                                            color: Colors.orange[700],
+                                            fontSize: 24,
+                                            fontStyle: FontStyle.italic,
+                                            fontWeight: FontWeight.bold),
+                                        activeTimeTextStyle: TextStyle(
+                                            color: Colors.orange,
+                                            fontSize: 26,
+                                            fontStyle: FontStyle.italic,
+                                            fontWeight: FontWeight.bold),
+                                      );
+                                    },
+                                    child: Container(
+                                      decoration: new BoxDecoration(
+                                          boxShadow: [
+                                            BoxShadow(
+                                              //  startSlotspreadRadius: 2,
+                                              blurRadius: 10,
+                                              offset: Offset(0,
+                                                  3), // changes position of shadow
+                                            ),
+                                          ],
+                                          color: Colors.red,
+                                          borderRadius: new BorderRadius.all(
+                                            Radius.circular(5),
+                                          )),
+                                      height: 150.h,
+                                      width: 150.h,
+                                      child: Column(
+                                        children: [
+                                          SizedBox(
+                                            height: 10.h,
                                           ),
+                                          Padding(
+                                            padding: EdgeInsets.all(8.0),
+                                            child: Text(
+                                              month.toUpperCase(),
+                                              style: WhiteText,
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            height: 10.h,
+                                          ),
+                                          Padding(
+                                            padding: EdgeInsets.all(8.0),
+                                            child: Text(day, style: WhiteText),
+                                          )
                                         ],
-                                        color: Colors.red,
-                                        borderRadius: new BorderRadius.all(
-                                          Radius.circular(5),
-                                        )),
-                                    height: 150.h,
-                                    width: 150.h,
-                                    child: Column(
-                                      children: [
-                                        SizedBox(
-                                          height: 10.h,
-                                        ),
-                                        Padding(
-                                          padding: EdgeInsets.all(8.0),
-                                          child: Text(
-                                            month.toUpperCase(),
-                                            style: WhiteText,
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          height: 10.h,
-                                        ),
-                                        Padding(
-                                          padding: EdgeInsets.all(8.0),
-                                          child: Text(day, style: WhiteText),
-                                        )
-                                      ],
+                                      ),
                                     ),
                                   ),
                                   SizedBox(
@@ -312,12 +374,12 @@ class _SetAvailabilityState extends State<SetAvailability> {
                                         child: Container(
                                           width: 200.w,
                                           child: textformfield1(
-                                            availablefromController,
-                                            "Available To",
-                                            "To",
-                                            false,
-                                            TextInputType.name,
-                                          ),
+                                              availablefromController,
+                                              "Available To",
+                                              "To",
+                                              false,
+                                              TextInputType.name,
+                                              false),
                                         ),
                                       ),
                                       Text("To",
@@ -328,18 +390,19 @@ class _SetAvailabilityState extends State<SetAvailability> {
                                         child: Container(
                                           width: 200.w,
                                           child: textformfield1(
-                                            availabletoController,
-                                            "Available To",
-                                            "To",
-                                            false,
-                                            TextInputType.name,
-                                          ),
+                                              availabletoController,
+                                              "Available To",
+                                              "To",
+                                              false,
+                                              TextInputType.name,
+                                              false),
                                         ),
                                       )
                                     ],
                                   ),
                                   Padding(
-                                    padding: EdgeInsets.only(bottom: 10.h),
+                                    padding: EdgeInsets.only(
+                                        bottom: 10.h, top: 10.h),
                                     child: CircularButtons(
                                       backgroundColor: const Color(0xfffc6359),
                                       borderColor: const Color(0xfffc6359),
@@ -640,6 +703,10 @@ class _SetAvailabilityState extends State<SetAvailability> {
           )),
     ));
   }
+
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
 }
 
 class MeetingDataSource extends CalendarDataSource {

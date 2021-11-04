@@ -14,7 +14,7 @@ class HomeDashboard extends StatefulWidget {
   State<HomeDashboard> createState() => _HomeDashboardState();
 }
 
-class _HomeDashboardState extends State<HomeDashboard> {
+class _HomeDashboardState extends State<HomeDashboard> with AutomaticKeepAliveClientMixin{
   final appointmentController = Get.find<AppointmentController>();
 
   @override
@@ -435,4 +435,8 @@ class _HomeDashboardState extends State<HomeDashboard> {
       ),
     ));
   }
+
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
 }

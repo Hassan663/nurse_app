@@ -53,6 +53,7 @@ Widget textformfield1(
   String labelText,
   bool obsecure,
   TextInputType type,
+  bool enabled
   //String? emptyValidationMessage,
   //final validator,
 ) {
@@ -66,6 +67,7 @@ Widget textformfield1(
       //   RegExp regex = new RegExp(pattern as String);
       //   return (!regex.hasMatch(value!)) ? emptyValidationMessage : null;
       // },
+      enabled: enabled,
       keyboardType: type,
       obscureText: obsecure,
       cursorColor: fLabelTextColor,
