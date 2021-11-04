@@ -17,6 +17,7 @@ dependencies:
   flutter_clean_calendar: ^1.1.0
   table_calendar: ^3.0.2
   get: ^4.3.8
+  syncfusion_flutter_calendar: ^19.3.48
   page_transition: ^2.0.2
   flutter_responsive_screen: ^1.0.0
   easy_sidemenu: ^0.1.1+1

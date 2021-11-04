@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:rtt_nurse_app/controllers/appointment/appointment_controller.dart';
+import 'package:rtt_nurse_app/view/ui/homescreen/dashboard_screens/queue.dart';
 
 import 'dashboard_screens/capture_picture.dart';
 import 'dashboard_screens/change_password.dart';
@@ -71,46 +72,54 @@ class _HomePageState extends State<HomePage> {
               ),
               SideMenuItem(
                 priority: 1,
-                title: 'Schedule Appointment',
+                title: 'Queue',
                 onTap: () {
                   page.jumpToPage(1);
+                },
+                icon: Icons.queue,
+              ),
+              SideMenuItem(
+                priority: 2,
+                title: 'Schedule Avalability',
+                onTap: () {
+                  page.jumpToPage(2);
                 },
                 icon: Icons.schedule,
               ),
               SideMenuItem(
-                priority: 2,
+                priority: 3,
                 title: 'Update Account',
                 onTap: () {
-                  page.jumpToPage(2);
+                  page.jumpToPage(3);
                 },
                 icon: Icons.system_update_alt,
               ),
               SideMenuItem(
-                priority: 3,
+                priority: 4,
                 title: 'Capture a Picture',
                 onTap: () {
-                  page.jumpToPage(3);
+                  page.jumpToPage(4);
                 },
                 icon: Icons.camera_alt_outlined,
               ),
               SideMenuItem(
-                priority: 4,
+                priority: 5,
                 title: 'Change Password',
                 onTap: () {
-                  page.jumpToPage(4);
+                  page.jumpToPage(5);
                 },
                 icon: Icons.change_circle,
               ),
               SideMenuItem(
-                priority: 5,
+                priority: 6,
                 title: 'Upload Document',
                 onTap: () async {
-                  page.jumpToPage(5);
+                  page.jumpToPage(6);
                 },
                 icon: Icons.cloud_upload_outlined,
               ),
               SideMenuItem(
-                priority: 6,
+                priority: 7,
                 title: 'Help',
                 onTap: () async {
                   page.jumpToPage(7);
@@ -124,6 +133,7 @@ class _HomePageState extends State<HomePage> {
               controller: page,
               children: [
                 HomeDashboard(),
+                Queue(),
                 SetAvailability(),
                 UpdateAccount(),
                 CapturePicture(),

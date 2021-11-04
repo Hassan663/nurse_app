@@ -97,7 +97,7 @@ class _HomeDashboardState extends State<HomeDashboard> {
                                 Column(
                                   children: [
                                     Padding(
-                                      padding: EdgeInsets.all(15.0),
+                                      padding: EdgeInsets.only(left:20,top: 20,bottom: 20),
                                       child: Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.start,
@@ -110,9 +110,10 @@ class _HomeDashboardState extends State<HomeDashboard> {
                                           ),
                                           Padding(
                                             padding:
-                                                EdgeInsets.only(left: 20.w),
+                                                EdgeInsets.only(left: 15.w),
                                             child: Container(
-                                              width: 150,
+                                              width: 140,
+                                              
                                               child: Text(
                                                 "Patient: ${appointmentController.availableAppointments[index].firstName} ${appointmentController.availableAppointments[index].lastName}",
                                                 overflow:
@@ -120,7 +121,7 @@ class _HomeDashboardState extends State<HomeDashboard> {
                                                 softWrap: true,
                                                 maxLines: 1,
                                                 style: GoogleFonts.inter(
-                                                    fontSize: 20.sp,
+                                                    fontSize: 17.sp,
                                                     fontStyle: FontStyle.normal,
                                                     fontWeight: FontWeight.w600,
                                                     color: Colors.white),
@@ -166,34 +167,7 @@ class _HomeDashboardState extends State<HomeDashboard> {
                                     ),
                                   ],
                                 ),
-                                // Container(
-                                //   margin: EdgeInsets.only(
-                                //       left: 10.w, right: 10.w, top: 20.h),
-                                //   height: 60.h,
-                                //   decoration: BoxDecoration(
-                                //       color: fContainerColor,
-                                //       borderRadius: BorderRadius.circular(10)),
-                                //   child: Row(
-                                //     mainAxisAlignment:
-                                //         MainAxisAlignment.spaceEvenly,
-                                //     children: [
-                                //       Container(
-                                //           height: 25.h,
-                                //           width: 25.w,
-                                //           child: Image.asset(
-                                //               "assets/datetime.png")),
-                                //       Text(
-                                //         "Fri, May 23, 10:00 am - 11:00 am",
-                                //         overflow: TextOverflow.ellipsis,
-                                //         style: GoogleFonts.inter(
-                                //             fontSize: 15.sp,
-                                //             fontStyle: FontStyle.normal,
-                                //             fontWeight: FontWeight.w500,
-                                //             color: Colors.white),
-                                //       )
-                                //     ],
-                                //   ),
-                                // ),
+                                
                                 Padding(
                                   padding: EdgeInsets.only(
                                       left: 10.w, right: 10.w, top: 30.h),

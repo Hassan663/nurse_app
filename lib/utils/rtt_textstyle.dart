@@ -13,7 +13,7 @@ final RedText = GoogleFonts.inter(
   fontSize: 14.0,
 );
 
-final WhiteText = GoogleFonts.inter(fontSize: 17, fontWeight: FontWeight.w600);
+final WhiteText = GoogleFonts.inter(fontSize: 17, fontWeight: FontWeight.w600,color:Colors.white);
 
 final SubTitleText = GoogleFonts.inter(
     fontWeight: FontWeight.w600, fontSize: 18.0, color: Colors.white);
