@@ -21,4 +21,5 @@ class AppointmentDatabase {
       return retVal;
     });
   }
+
 }

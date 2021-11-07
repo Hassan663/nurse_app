@@ -66,14 +66,6 @@ class _QueueState extends State<Queue> with AutomaticKeepAliveClientMixin {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.all(15.0),
-                      child: Text(
-                        "Time Slot (12:30 am - 2:30 pm",
-                        style: RedText,
-                        textAlign: TextAlign.left,
-                      ),
-                    ),
                     Container(
                       height: height * 0.70,
                       width: width * 0.8,
@@ -101,219 +93,233 @@ class _QueueState extends State<Queue> with AutomaticKeepAliveClientMixin {
                               //                 .reqCreatedAt!
                               //                 .seconds *
                               //             1000);
-                              return Padding(
-                                padding: EdgeInsets.all(15.0),
-                                child: Container(
-                                    height: 100.h,
-                                    width: width * 0.2,
-                                    decoration: BoxDecoration(
-                                        color: fLabelTextColor,
-                                        borderRadius:
-                                            BorderRadius.circular(15)),
-                                    child: Row(
-                                      children: [
-                                        Padding(
-                                          padding: EdgeInsets.only(
-                                              left: 20, top: 20, bottom: 20),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            children: [
-                                              CircleAvatar(
-                                                maxRadius: 30,
-                                                child: IconButton(
-                                                    onPressed: () {},
-                                                    icon: Icon(Icons.person)),
-                                              ),
-                                              Padding(
-                                                padding:
-                                                    EdgeInsets.only(left: 15.w),
-                                                child: Container(
-                                                  width: 140,
-                                                  child: Text(
-                                                    appointmentController
-                                                            .availableAppointments[
-                                                                index]
-                                                            .firstName
-                                                            .toString() +
-                                                        " " +
+                              return Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                mainAxisSize: MainAxisSize.max,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(12.0),
+                                    child: Text(
+                                      "Time Slots: ${appointmentController.availableAppointments[index].schedule!.slots!.map((e) => "${e.startSlot}-${e.endSlot}")}",
+                                      style: RedText,
+                                      textAlign: TextAlign.left,
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.all(15.0),
+                                    child: Container(
+                                        height: 100.h,
+                                        width: width * 0.2,
+                                        decoration: BoxDecoration(
+                                            color: fLabelTextColor,
+                                            borderRadius:
+                                                BorderRadius.circular(15)),
+                                        child: Row(
+                                          children: [
+                                            Padding(
+                                              padding: EdgeInsets.only(
+                                                  left: 20, top: 20, bottom: 20),
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.start,
+                                                children: [
+                                                  CircleAvatar(
+                                                    maxRadius: 30,
+                                                    child: IconButton(
+                                                        onPressed: () {},
+                                                        icon: Icon(Icons.person)),
+                                                  ),
+                                                  Padding(
+                                                    padding:
+                                                        EdgeInsets.only(left: 15.w),
+                                                    child: Container(
+                                                      width: 140,
+                                                      child: Text(
                                                         appointmentController
-                                                            .availableAppointments[
-                                                                index]
-                                                            .lastName
-                                                            .toString(),
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                    softWrap: true,
-                                                    maxLines: 1,
-                                                    style: GoogleFonts.inter(
-                                                        fontSize: 17.sp,
-                                                        fontStyle:
-                                                            FontStyle.normal,
-                                                        fontWeight:
-                                                            FontWeight.w600,
-                                                        color: Colors.white),
+                                                                .availableAppointments[
+                                                                    index]
+                                                                .firstName
+                                                                .toString() +
+                                                            " " +
+                                                            appointmentController
+                                                                .availableAppointments[
+                                                                    index]
+                                                                .lastName
+                                                                .toString(),
+                                                        overflow:
+                                                            TextOverflow.ellipsis,
+                                                        softWrap: true,
+                                                        maxLines: 1,
+                                                        style: GoogleFonts.inter(
+                                                            fontSize: 17.sp,
+                                                            fontStyle:
+                                                                FontStyle.normal,
+                                                            fontWeight:
+                                                                FontWeight.w600,
+                                                            color: Colors.white),
+                                                      ),
+                                                    ),
                                                   ),
-                                                ),
+                                                ],
                                               ),
-                                            ],
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding: EdgeInsets.only(
-                                              left: 20, top: 20, bottom: 20),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            children: [
-                                              CircleAvatar(
-                                                  maxRadius: 30,
-                                                  child: IconButton(
-                                                      onPressed: () {},
-                                                      icon:
-                                                          Icon(Icons.people))),
-                                              Padding(
-                                                padding:
-                                                    EdgeInsets.only(left: 15.w),
-                                                child: Container(
-                                                  width: 140,
-                                                  child: Text(
-                                                    "Peoples in Queue",
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                    softWrap: true,
-                                                    maxLines: 1,
-                                                    style: GoogleFonts.inter(
-                                                        fontSize: 17.sp,
-                                                        fontStyle:
-                                                            FontStyle.normal,
-                                                        fontWeight:
-                                                            FontWeight.w600,
-                                                        color: Colors.white),
+                                            ),
+                                            Padding(
+                                              padding: EdgeInsets.only(
+                                                  left: 20, top: 20, bottom: 20),
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.start,
+                                                children: [
+                                                  CircleAvatar(
+                                                      maxRadius: 30,
+                                                      child: IconButton(
+                                                          onPressed: () {},
+                                                          icon:
+                                                              Icon(Icons.people))),
+                                                  Padding(
+                                                    padding:
+                                                        EdgeInsets.only(left: 15.w),
+                                                    child: Container(
+                                                      width: 140,
+                                                      child: Text(
+                                                        "Peoples in Queue",
+                                                        overflow:
+                                                            TextOverflow.ellipsis,
+                                                        softWrap: true,
+                                                        maxLines: 1,
+                                                        style: GoogleFonts.inter(
+                                                            fontSize: 17.sp,
+                                                            fontStyle:
+                                                                FontStyle.normal,
+                                                            fontWeight:
+                                                                FontWeight.w600,
+                                                            color: Colors.white),
+                                                      ),
+                                                    ),
                                                   ),
-                                                ),
+                                                ],
                                               ),
-                                            ],
-                                          ),
-                                        ),
+                                            ),
 
-                                        Padding(
-                                          padding: EdgeInsets.only(
-                                              left: 20, top: 20, bottom: 20),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            children: [
-                                              CircleAvatar(
-                                                  maxRadius: 30,
-                                                  child: IconButton(
+                                            Padding(
+                                              padding: EdgeInsets.only(
+                                                  left: 20, top: 20, bottom: 20),
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.start,
+                                                children: [
+                                                  CircleAvatar(
+                                                      maxRadius: 30,
+                                                      child: IconButton(
+                                                          onPressed: () {},
+                                                          icon: Icon(Icons.call))),
+                                                  ElevatedButton(
                                                       onPressed: () {},
-                                                      icon: Icon(Icons.call))),
-                                              ElevatedButton(
-                                                  onPressed: () {},
-                                                  child: Text(
-                                                    "Start Video call",
-                                                    style: GoogleFonts.inter(
-                                                        fontSize: 15.sp,
-                                                        fontStyle:
-                                                            FontStyle.normal,
-                                                        fontWeight:
-                                                            FontWeight.w500,
-                                                        color: Colors.white),
-                                                  ),
-                                                  style: ElevatedButton.styleFrom(
-                                                      fixedSize: Size(110, 30),
-                                                      primary: fButtonColor,
-                                                      shape:
-                                                          RoundedRectangleBorder(
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          20)))),
-                                            ],
-                                          ),
-                                        ),
-                                        // Container(
-                                        //   margin: EdgeInsets.only(
-                                        //     left: 10.w,
-                                        //     right: 10.w,
-                                        //   ),
-                                        //   height: 100.h,
-                                        //   decoration: BoxDecoration(
-                                        //       color: fContainerColor,
-                                        //       borderRadius:
-                                        //           BorderRadius.circular(10)),
-                                        //   child: Column(
-                                        //     mainAxisAlignment:
-                                        //         MainAxisAlignment.spaceEvenly,
-                                        //     children: [
-                                        //       Container(
-                                        //           height: 25.h,
-                                        //           width: 25.w,
-                                        //           child: Image.asset(
-                                        //               "assets/datetime.png")),
-                                        //       Row(
-                                        //         children: [
-                                        //           Container(
-                                        //             width: 150,
-                                        //             child: Text(
-                                        //               "Peoples in Queue",
-                                        //               overflow:
-                                        //                   TextOverflow.ellipsis,
-                                        //               style: GoogleFonts.inter(
-                                        //                   fontSize: 15.sp,
-                                        //                   fontStyle:
-                                        //                       FontStyle.normal,
-                                        //                   fontWeight:
-                                        //                       FontWeight.w500,
-                                        //                   color: Colors.white),
-                                        //             ),
-                                        //           ),
-                                        //           Container(
-                                        //             width: 150,
-                                        //             child: Text(
-                                        //               "10/Active Count",
-                                        //               overflow:
-                                        //                   TextOverflow.ellipsis,
-                                        //               style: GoogleFonts.inter(
-                                        //                   fontSize: 15.sp,
-                                        //                   fontStyle:
-                                        //                       FontStyle.normal,
-                                        //                   fontWeight:
-                                        //                       FontWeight.w500,
-                                        //                   color: Colors.white),
-                                        //             ),
-                                        //           ),
-                                        //         ],
-                                        //       ),
-                                        //       ElevatedButton(
-                                        //           onPressed: () {},
-                                        //           child: Text(
-                                        //             "Start Video call",
-                                        //             style: GoogleFonts.inter(
-                                        //                 fontSize: 15.sp,
-                                        //                 fontStyle:
-                                        //                     FontStyle.normal,
-                                        //                 fontWeight:
-                                        //                     FontWeight.w500,
-                                        //                 color: Colors.white),
-                                        //           ),
-                                        //           style: ElevatedButton.styleFrom(
-                                        //               fixedSize: Size(110, 30),
-                                        //               primary: fButtonColor,
-                                        //               shape:
-                                        //                   RoundedRectangleBorder(
-                                        //                       borderRadius:
-                                        //                           BorderRadius
-                                        //                               .circular(
-                                        //                                   20)))),
-                                        //     ],
-                                        //   ),
-                                        // ),
+                                                      child: Text(
+                                                        "Start Video call",
+                                                        style: GoogleFonts.inter(
+                                                            fontSize: 15.sp,
+                                                            fontStyle:
+                                                                FontStyle.normal,
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                            color: Colors.white),
+                                                      ),
+                                                      style: ElevatedButton.styleFrom(
+                                                          fixedSize: Size(110, 30),
+                                                          primary: fButtonColor,
+                                                          shape:
+                                                              RoundedRectangleBorder(
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              20)))),
+                                                ],
+                                              ),
+                                            ),
+                                            // Container(
+                                            //   margin: EdgeInsets.only(
+                                            //     left: 10.w,
+                                            //     right: 10.w,
+                                            //   ),
+                                            //   height: 100.h,
+                                            //   decoration: BoxDecoration(
+                                            //       color: fContainerColor,
+                                            //       borderRadius:
+                                            //           BorderRadius.circular(10)),
+                                            //   child: Column(
+                                            //     mainAxisAlignment:
+                                            //         MainAxisAlignment.spaceEvenly,
+                                            //     children: [
+                                            //       Container(
+                                            //           height: 25.h,
+                                            //           width: 25.w,
+                                            //           child: Image.asset(
+                                            //               "assets/datetime.png")),
+                                            //       Row(
+                                            //         children: [
+                                            //           Container(
+                                            //             width: 150,
+                                            //             child: Text(
+                                            //               "Peoples in Queue",
+                                            //               overflow:
+                                            //                   TextOverflow.ellipsis,
+                                            //               style: GoogleFonts.inter(
+                                            //                   fontSize: 15.sp,
+                                            //                   fontStyle:
+                                            //                       FontStyle.normal,
+                                            //                   fontWeight:
+                                            //                       FontWeight.w500,
+                                            //                   color: Colors.white),
+                                            //             ),
+                                            //           ),
+                                            //           Container(
+                                            //             width: 150,
+                                            //             child: Text(
+                                            //               "10/Active Count",
+                                            //               overflow:
+                                            //                   TextOverflow.ellipsis,
+                                            //               style: GoogleFonts.inter(
+                                            //                   fontSize: 15.sp,
+                                            //                   fontStyle:
+                                            //                       FontStyle.normal,
+                                            //                   fontWeight:
+                                            //                       FontWeight.w500,
+                                            //                   color: Colors.white),
+                                            //             ),
+                                            //           ),
+                                            //         ],
+                                            //       ),
+                                            //       ElevatedButton(
+                                            //           onPressed: () {},
+                                            //           child: Text(
+                                            //             "Start Video call",
+                                            //             style: GoogleFonts.inter(
+                                            //                 fontSize: 15.sp,
+                                            //                 fontStyle:
+                                            //                     FontStyle.normal,
+                                            //                 fontWeight:
+                                            //                     FontWeight.w500,
+                                            //                 color: Colors.white),
+                                            //           ),
+                                            //           style: ElevatedButton.styleFrom(
+                                            //               fixedSize: Size(110, 30),
+                                            //               primary: fButtonColor,
+                                            //               shape:
+                                            //                   RoundedRectangleBorder(
+                                            //                       borderRadius:
+                                            //                           BorderRadius
+                                            //                               .circular(
+                                            //                                   20)))),
+                                            //     ],
+                                            //   ),
+                                            // ),
 
-                                        SizedBox(height: 30.h),
-                                      ],
-                                    )),
+                                            SizedBox(height: 30.h),
+                                          ],
+                                        )),
+                                  ),
+                                ],
                               );
                             }),
                       ),
