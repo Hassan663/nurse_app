@@ -1,24 +1,139 @@
 import 'package:flutter/material.dart';
-import 'package:rtt_nurse_app/utils/rrt_sizes.dart';
+import 'package:get/get.dart';
+import 'package:rtt_nurse_app/controllers/appointment/appointment_controller.dart';
+import 'dart:math';
+import 'package:flutter/widgets.dart';
+import 'package:syncfusion_flutter_calendar/calendar.dart';
 
-class UpdateAccount extends StatelessWidget {
+class UpdateAccount extends StatefulWidget {
+  const UpdateAccount({Key? key}) : super(key: key);
+  @override
+  UpdateAccountState createState() => UpdateAccountState();
+}
+
+class UpdateAccountState extends State<UpdateAccount> {
+  final appointmentController = Get.put(AppointmentController());
+  // List<String> _subjectCollection = <String>[];
+  // List<Color> _colorCollection = <Color>[];
+  List<Appointment> _shiftCollection = <Appointment>[];
+  List<CalendarResource> _employeeCollection = <CalendarResource>[];
+  _DataSource? _events;
+
+  @override
+  void initState() {
+    // _addResources();
+    // _addAppointmentDetails();
+    _addAppointments(8, Color(0xFF0F8644));
+    _addAppointments(2, Color(0xFF0F2B86));
+    _events = _DataSource(_shiftCollection, _employeeCollection);
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-        child: Container(
-      height: MediaQuery.of(context).size.height,
-      width: MediaQuery.of(context).size.width,
-      decoration: new BoxDecoration(
-          color: Color(0xffE5E5E5), //new Color.fromRGBO(255, 0, 0, 0.0),
-          borderRadius: new BorderRadius.only(
-              topLeft: Radius.circular(circular_radius_homeContainers),
-              bottomLeft: Radius.circular(circular_radius_homeContainers))),
-      child: Center(
-        child: Text('update account'),
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: Scaffold(
+        body: SafeArea(
+          child: Column(
+            children: [
+              TextButton(
+                child: const Text('Insert resource'),
+                onPressed: () {
+                  final CalendarResource resource = CalendarResource(
+                    displayName: 'Sophia',
+                    color: Colors.red,
+                    id: '0004',
+                  );
+                  _employeeCollection.insert(1, resource);
+                  _events!.notifyListeners(CalendarDataSourceAction.addResource,
+                      <CalendarResource>[resource]);
+                  Random random = Random();
+                  // _addAppointments(1);
+                  _events = _DataSource(_shiftCollection, _employeeCollection);
+                },
+              ),
+              // TextButton(
+              //   child: const Text('Remove resource'),
+              //   onPressed: () {
+              //     final CalendarResource resource = _employeeCollection[0];
+              //     _employeeCollection.remove(resource);
+              //     _events!.notifyListeners(
+              //         CalendarDataSourceAction.removeResource,
+              //         <CalendarResource>[resource]);
+              //   },
+              // ),
+              // TextButton(
+              //   child: const Text('Reset resource'),
+              //   onPressed: () {
+              //     _employeeCollection = <CalendarResource>[];
+              //     _events!.resources!.clear();
+              //     _employeeCollection.add(CalendarResource(
+              //         displayName: "Sophia", id: '0004', color: Colors.green));
+
+              //     _events!.resources!.addAll(_employeeCollection);
+              //     _events!.notifyListeners(
+              //         CalendarDataSourceAction.resetResource,
+              //         _employeeCollection);
+              //   },
+              // ),
+
+              Expanded(
+                child: SfCalendar(
+                  view: CalendarView.week,
+                  showDatePickerButton: true,
+                  dataSource: _events,
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
-    ));
+    );
+  }
+
+  void _addAppointments(startHour, Color color) {
+    _shiftCollection = <Appointment>[];
+    final DateTime date = DateTime.now().add(Duration(days: 1 + 2));
+    startHour = startHour >= 13 && startHour <= 14 ? startHour + 1 : startHour;
+    DateTime _shiftStartTime =
+        DateTime(date.year, date.month, date.day, startHour, 0, 0);
+    _shiftCollection.add(Appointment(
+        startTime: _shiftStartTime,
+        endTime: _shiftStartTime.add(const Duration(minutes: 30)),
+        subject: "Time Slots",
+        color: color,
+        startTimeZone: '',
+        endTimeZone: '',
+        resourceIds: ["0000"]));
   }
 }
+
+class _DataSource extends CalendarDataSource {
+  _DataSource(List<Appointment> source, List<CalendarResource> resourceColl) {
+    appointments = source;
+    resources = resourceColl;
+  }
+}
+
+// class UpdateAccount extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext context) {
+//     return SafeArea(
+//         child: Container(
+//       height: MediaQuery.of(context).size.height,
+//       width: MediaQuery.of(context).size.width,
+//       decoration: new BoxDecoration(
+//           color: Color(0xffE5E5E5), //new Color.fromRGBO(255, 0, 0, 0.0),
+//           borderRadius: new BorderRadius.only(
+//               topLeft: Radius.circular(circular_radius_homeContainers),
+//               bottomLeft: Radius.circular(circular_radius_homeContainers))),
+//       child: Center(
+//         child: Text('update account'),
+//       ),
+//     ));
+//   }
+// }
 // import 'package:flutter/cupertino.dart';
 // import 'package:flutter/material.dart';
 // import 'package:flutter_timer_countdown/flutter_timer_countdown.dart';

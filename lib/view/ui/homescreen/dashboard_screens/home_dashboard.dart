@@ -14,7 +14,8 @@ class HomeDashboard extends StatefulWidget {
   State<HomeDashboard> createState() => _HomeDashboardState();
 }
 
-class _HomeDashboardState extends State<HomeDashboard> with AutomaticKeepAliveClientMixin{
+class _HomeDashboardState extends State<HomeDashboard>
+    with AutomaticKeepAliveClientMixin {
   final appointmentController = Get.find<AppointmentController>();
 
   @override
@@ -81,7 +82,10 @@ class _HomeDashboardState extends State<HomeDashboard> with AutomaticKeepAliveCl
                     itemCount:
                         appointmentController.availableAppointments.length,
                     itemBuilder: (BuildContext ctx, index) {
-                      DateTime date = DateTime.fromMillisecondsSinceEpoch(appointmentController.availableAppointments[index].reqCreatedAt!.seconds * 1000);
+                      DateTime date = DateTime.fromMillisecondsSinceEpoch(
+                          appointmentController.availableAppointments[index]
+                                  .reqCreatedAt!.seconds *
+                              1000);
                       return Padding(
                         padding: EdgeInsets.all(8.0.sp),
                         child: SingleChildScrollView(
@@ -97,7 +101,8 @@ class _HomeDashboardState extends State<HomeDashboard> with AutomaticKeepAliveCl
                                 Column(
                                   children: [
                                     Padding(
-                                      padding: EdgeInsets.only(left:20,top: 20,bottom: 20),
+                                      padding: EdgeInsets.only(
+                                          left: 20, top: 20, bottom: 20),
                                       child: Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.start,
@@ -113,11 +118,9 @@ class _HomeDashboardState extends State<HomeDashboard> with AutomaticKeepAliveCl
                                                 EdgeInsets.only(left: 15.w),
                                             child: Container(
                                               width: 140,
-                                              
                                               child: Text(
                                                 "Patient: ${appointmentController.availableAppointments[index].firstName} ${appointmentController.availableAppointments[index].lastName}",
-                                                overflow:
-                                                TextOverflow.ellipsis,
+                                                overflow: TextOverflow.ellipsis,
                                                 softWrap: true,
                                                 maxLines: 1,
                                                 style: GoogleFonts.inter(
@@ -167,7 +170,6 @@ class _HomeDashboardState extends State<HomeDashboard> with AutomaticKeepAliveCl
                                     ),
                                   ],
                                 ),
-                                
                                 Padding(
                                   padding: EdgeInsets.only(
                                       left: 10.w, right: 10.w, top: 30.h),

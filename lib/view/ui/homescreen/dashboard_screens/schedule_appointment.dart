@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:date_format/date_format.dart';
@@ -30,7 +31,8 @@ class SetAvailability extends StatefulWidget {
   _SetAvailabilityState createState() => _SetAvailabilityState();
 }
 
-class _SetAvailabilityState extends State<SetAvailability>with AutomaticKeepAliveClientMixin {
+class _SetAvailabilityState extends State<SetAvailability>
+    with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
@@ -41,33 +43,81 @@ class _SetAvailabilityState extends State<SetAvailability>with AutomaticKeepAliv
     CalendarFormat _calendarFormat = CalendarFormat.month;
     RangeSelectionMode _rangeSelectionMode = RangeSelectionMode.toggledOff;
     DateTime _focusedDay = DateTime.now();
-    TimeOfDay startingTimeRange = TimeOfDay.now();
+    TimeOfDay startingTimeRange = TimeOfDay(hour: 10, minute: 10);
     TimeOfDay endingTimeRange = TimeOfDay.now();
+    List<Meeting> meetings = <Meeting>[];
+    TimeOfDay selectedStartTime = TimeOfDay(hour: 13, minute: 10);
+    TimeOfDay selectendingTimeRange = TimeOfDay.now();
 
     var formatted = formatDate(DateTime.now(), [mm]);
     var formatted1;
+    List<String> _subjectCollection = <String>[];
+    List<Color> _colorCollection = <Color>[];
+    List<Appointment> _shiftCollection = <Appointment>[];
+    List<CalendarResource> _employeeCollection = <CalendarResource>[];
+    _DataSource? _events;
 
     @override
     void initState() {
-      super.initState();
+      _events = _DataSource(_shiftCollection, _employeeCollection);
       _selectedDay = _focusedDay;
+      super.initState();
     }
 
+    @override
     @override
     void dispose() {
       super.dispose();
     }
 
     List<Meeting> _getDataSource() {
-      final List<Meeting> meetings = <Meeting>[];
       final DateTime today = DateTime.now();
-      final DateTime startTime = DateTime(today.year, today.month, today.day, startingTimeRange.hour, startingTimeRange.minute, 0);
-      final DateTime endTime = DateTime(today.year, today.month, today.day, endingTimeRange.hour, endingTimeRange.minute, 0);
+      final DateTime startTime = DateTime(today.year, today.month, today.day,
+          startingTimeRange.hour, startingTimeRange.minute, 0);
+      final DateTime endTime = DateTime(today.year, today.month, today.day,
+          endingTimeRange.hour, endingTimeRange.minute, 0);
       meetings.add(Meeting(
         startTime,
         endTime,
       ));
       return meetings;
+    }
+
+    void _addAppointments() {
+      _shiftCollection = <Appointment>[];
+      final Random random = Random();
+      for (int i = 0; i < _employeeCollection.length; i++) {
+        final List<String> _employeeIds = <String>[
+          _employeeCollection[i].id.toString()
+        ];
+        if (i == _employeeCollection.length - 1) {
+          int index = random.nextInt(5);
+          index = index == i ? index + 1 : index;
+          _employeeIds.add(_employeeCollection[index].id.toString());
+        }
+
+        for (int k = 0; k < 365; k++) {
+          if (_employeeIds.length > 1 && k % 2 == 0) {
+            continue;
+          }
+          for (int j = 0; j < 2; j++) {
+            final DateTime date = DateTime.now().add(Duration(days: k + j));
+            int startHour = 9 + random.nextInt(6);
+            startHour =
+                startHour >= 13 && startHour <= 14 ? startHour + 1 : startHour;
+            final DateTime _shiftStartTime =
+                DateTime(date.year, date.month, date.day, startHour, 0, 0);
+            _shiftCollection.add(Appointment(
+                startTime: _shiftStartTime,
+                endTime: _shiftStartTime.add(const Duration(hours: 1)),
+                subject: _subjectCollection[random.nextInt(8)],
+                color: _colorCollection[random.nextInt(8)],
+                startTimeZone: '',
+                endTimeZone: '',
+                resourceIds: _employeeIds));
+          }
+        }
+      }
     }
 
     List months = [
@@ -268,15 +318,16 @@ class _SetAvailabilityState extends State<SetAvailability>with AutomaticKeepAliv
                                         context: context,
                                         start: TimeOfDay(hour: 22, minute: 9),
                                         onStartChange: (start) {
-                                          print("start time " +
-                                              start.toString());
-
-                                          availablefromController.text = "${start.hourOfPeriod}:${start.minute == 0 ? "00" : start.minute} ${start.period.index == 0 ? "AM" : "PM"}";
+                                          print(
+                                              "start time " + start.toString());
+                                          availablefromController.text =
+                                              "${start.hourOfPeriod}:${start.minute == 0 ? "00" : start.minute} ${start.period.index == 0 ? "AM" : "PM"}";
                                           startingTimeRange = start;
                                         },
                                         onEndChange: (end) {
                                           print("end time " + end.toString());
-                                          availabletoController.text ="${end.hourOfPeriod}:${end.minute == 0 ? "00" : end.minute} ${end.period.index == 0 ? "AM" : "PM"}";
+                                          availabletoController.text =
+                                              "${end.hourOfPeriod}:${end.minute == 0 ? "00" : end.minute} ${end.period.index == 0 ? "AM" : "PM"}";
                                           endingTimeRange = end;
                                         },
                                         interval: Duration(minutes: 30),
@@ -411,6 +462,27 @@ class _SetAvailabilityState extends State<SetAvailability>with AutomaticKeepAliv
                                       width: width * 0.1,
                                       onPressed: () {
                                         setState(() {
+                                          // final DateTime startTime = DateTime(
+                                          //     _focusedDay.year,
+                                          //     _focusedDay.month,
+                                          //     _focusedDay.day,
+                                          //     startingTimeRange.hour,
+                                          //     startingTimeRange.minute,
+                                          //     0);
+                                          // final DateTime endTime = DateTime(
+                                          //     _focusedDay.year,
+                                          //     _focusedDay.month,
+                                          //     _focusedDay.day,
+                                          //     endingTimeRange.hour,
+                                          //     endingTimeRange.minute,
+                                          //     0);
+
+                                          // meetings.add(Meeting(
+                                          //   startTime,
+                                          //   endTime,
+                                          // ));
+                                          // // notifyListeners();
+
                                           Slots s = Slots(
                                               startSlot: availablefromController
                                                   .text
@@ -440,32 +512,69 @@ class _SetAvailabilityState extends State<SetAvailability>with AutomaticKeepAliv
                     ),
                     //second row choice chip
                     Container(
-                      height: MediaQuery.of(context).size.height * 0.87,
-                      width: MediaQuery.of(context).size.width * 0.43,
-                      decoration: new BoxDecoration(
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.withOpacity(0.3),
-                              spreadRadius: 2,
-                              blurRadius: 10,
-                              offset:
-                                  Offset(0, 3), // changes position of shadow
-                            ),
+                        height: MediaQuery.of(context).size.height * 0.87,
+                        width: MediaQuery.of(context).size.width * 0.43,
+                        decoration: new BoxDecoration(
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.3),
+                                spreadRadius: 2,
+                                blurRadius: 10,
+                                offset:
+                                    Offset(0, 3), // changes position of shadow
+                              ),
+                            ],
+                            color: Colors.white,
+                            borderRadius: new BorderRadius.all(
+                              Radius.circular(5),
+                            )),
+                        child: SfCalendar(
+                          showCurrentTimeIndicator: true,
+                          showWeekNumber: true,
+                          showDatePickerButton: true,
+                          showNavigationArrow: true,
+
+                          // onTap: (CalendarTapDetails details) {
+
+                          // },
+                          blackoutDates: <DateTime>[
+                            DateTime(2021, 11, 10),
+                            DateTime(2021, 11, 15),
+                            DateTime(2021, 11, 20),
+                            DateTime(2021, 11, 22),
+                            DateTime(2021, 11, 24)
                           ],
-                          color: Colors.white,
-                          borderRadius: new BorderRadius.all(
-                            Radius.circular(5),
-                          )),
-                      child: SfCalendar(
-                        todayHighlightColor: Colors.red,
-                        initialDisplayDate: _focusedDay,
-                        cellBorderColor: Colors.grey,
-                        dataSource: MeetingDataSource(_getDataSource()),
-                        allowDragAndDrop: false,
-                        view: CalendarView.week,
-                        firstDayOfWeek: 1,
-                      ),
-                    )
+                          blackoutDatesTextStyle: TextStyle(
+                              fontWeight: FontWeight.w400,
+                              fontSize: 13,
+                              color: Colors.red,
+                              decoration: TextDecoration.lineThrough),
+                          todayHighlightColor: Colors.red,
+                          initialDisplayDate: _focusedDay,
+                          cellBorderColor: Colors.grey,
+                          dataSource: _events,
+                          //   dataSource: MeetingDataSource(_getDataSource()),
+                          allowDragAndDrop: false,
+                          view: CalendarView.month,
+                          firstDayOfWeek: 4,
+                          selectionDecoration: BoxDecoration(
+                            color: Colors.transparent,
+                            border: Border.all(color: Colors.red, width: 2),
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(4)),
+                            shape: BoxShape.rectangle,
+                          ),
+                          cellEndPadding: 5,
+                          monthViewSettings:
+                              MonthViewSettings(appointmentDisplayCount: 2),
+                          // monthViewSettings: MonthViewSettings(
+                          //     appointmentDisplayMode:
+                          //         MonthAppointmentDisplayMode.appointment),
+
+                          // monthViewSettings: MonthViewSettings(
+                          //     appointmentDisplayMode:
+                          //         MonthAppointmentDisplayMode.appointment),
+                        )),
                   ],
                 ),
                 Spacer(),
@@ -524,6 +633,7 @@ class _SetAvailabilityState extends State<SetAvailability>with AutomaticKeepAliv
                                               onPressed: () {
                                                 print(
                                                     "length : ${authController.selectedSlot.length}");
+
                                                 Database()
                                                     .createAppoitmentInDatabase(
                                                   Schedule(
@@ -534,6 +644,8 @@ class _SetAvailabilityState extends State<SetAvailability>with AutomaticKeepAliv
                                                         .selectedSlot,
                                                   ),
                                                 );
+                                                authController.selectedSlot =
+                                                    <Slots>[].obs;
                                                 Get.back();
                                               }),
                                           CircularButtons(
@@ -733,4 +845,11 @@ class Meeting {
 
   DateTime from;
   DateTime to;
+}
+
+class _DataSource extends CalendarDataSource {
+  _DataSource(List<Appointment> source, List<CalendarResource> resourceColl) {
+    appointments = source;
+    resources = resourceColl;
+  }
 }
