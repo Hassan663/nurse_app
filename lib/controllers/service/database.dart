@@ -32,12 +32,14 @@ class Database {
   Future<bool> createAppoitmentInDatabase(Schedule schedule) async {
     try {
       Timestamp currentTime = Timestamp.now();
-      await _firestore.collection('available-appointments').doc().set({
+      DocumentReference document = _firestore.collection('available-appointments').doc();
+      await document.set({
         "nurseId": authController.currentUser.value.uid,
         "schedule": schedule.toJson(),
-        "createdAt": Timestamp.now()
+        "createdAt": Timestamp.now(),
+        "docId" : document.id
       });
-      createAppointmentInNurseCollection(schedule, currentTime);
+      createAppointmentInNurseCollection(schedule, currentTime, document);
       CustomSnackBar.showSnackBar(
           title: "Appoitment successfully created",
           message: '',
@@ -50,17 +52,18 @@ class Database {
   }
 
   Future<bool> createAppointmentInNurseCollection(
-      Schedule schedule, Timestamp currentTime) async {
+      Schedule schedule, Timestamp currentTime, DocumentReference document) async {
     try {
       await _firestore
           .collection('nurse')
           .doc(authController.currentUser.value.uid)
           .collection('appointments')
-          .doc()
+          .doc(document.id)
           .set({
         "nurseId": authController.currentUser.value.uid,
         "schedule": schedule.toJson(),
-        "createdAt": currentTime
+        "createdAt": currentTime,
+        "docId" : document.id
       });
       return true;
     } catch (e) {

@@ -271,12 +271,12 @@ class _SetAvailabilityState extends State<SetAvailability>with AutomaticKeepAliv
                                           print("start time " +
                                               start.toString());
 
-                                          availablefromController.text = "${start.hour}:${start.minute == 0 ? "00" : start.minute} ${start.period.index == 0 ? "AM" : "PM"}";
+                                          availablefromController.text = "${start.hourOfPeriod}:${start.minute == 0 ? "00" : start.minute} ${start.period.index == 0 ? "AM" : "PM"}";
                                           startingTimeRange = start;
                                         },
                                         onEndChange: (end) {
                                           print("end time " + end.toString());
-                                          availabletoController.text ="${end.hour}:${end.minute == 0 ? "00" : end.minute} ${end.period.index == 0 ? "AM" : "PM"}";
+                                          availabletoController.text ="${end.hourOfPeriod}:${end.minute == 0 ? "00" : end.minute} ${end.period.index == 0 ? "AM" : "PM"}";
                                           endingTimeRange = end;
                                         },
                                         interval: Duration(minutes: 30),
