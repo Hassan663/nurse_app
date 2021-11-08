@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
     return ScreenUtilInit(
       builder: () => GetMaterialApp(
         debugShowCheckedModeBanner: false,
-        title: 'RTT NURSE APP',
+        title: 'RTT NURSE APP ',
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),

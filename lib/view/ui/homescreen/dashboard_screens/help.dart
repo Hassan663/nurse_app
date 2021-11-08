@@ -446,7 +446,11 @@
 // }
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:rtt_nurse_app/controllers/help/help_controller.dart';
 import 'package:rtt_nurse_app/utils/rrt_sizes.dart';
+import 'package:agora_rtc_engine/rtc_local_view.dart' as RtcLocalView;
+import 'package:agora_rtc_engine/rtc_remote_view.dart' as RtcRemoteView;
 
 class Help extends StatelessWidget {
   @override
@@ -460,9 +464,93 @@ class Help extends StatelessWidget {
           borderRadius: new BorderRadius.only(
               topLeft: Radius.circular(circular_radius_homeContainers),
               bottomLeft: Radius.circular(circular_radius_homeContainers))),
-      child: Center(
-        child: Text('Help'),
-      ),
+      child: GetBuilder<HelpController>(
+        init: HelpController(),
+        builder: (_){
+          return _.isLoading ?
+              Center(
+                child: CircularProgressIndicator(),
+              )
+          :
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Container(
+                width: Get.width,
+                child: TextField(
+                  controller: _.controller,
+                  decoration: InputDecoration(hintText: 'Channel ID'),
+                  onChanged: (text) {
+                    _.channelId = text;
+                  },
+                ),
+              ),
+              SizedBox(height: 30.0,),
+              Container(
+                width: Get.width,
+                child: Row(
+                  children: [
+                    Expanded(
+                      flex: 1,
+                      child: ElevatedButton(
+                        onPressed:
+                        _.isJoined ? _.leaveChannel : _.joinChannel,
+                        child: Text('${_.isJoined ? 'Leave' : 'Join'} channel'),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+              renderVideo(_),
+              SizedBox(
+                height: 30.0,
+              ),
+              Align(
+                alignment: Alignment.bottomRight,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    ElevatedButton(
+                      onPressed: _.switchCameras,
+                      child: Text('Camera ${_.switchCamera ? 'front' : 'rear'}'),
+                    ),
+                  ],
+                ),
+              )
+            ],
+          );
+        },
+      )
     ));
+  }
+  renderVideo(HelpController _) {
+    return Expanded(
+      child: Stack(
+        children: [
+          RtcLocalView.SurfaceView(),
+          Align(
+            alignment: Alignment.topLeft,
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: List.of(_.remoteUid.map(
+                      (e) => GestureDetector(
+                    onTap: _.switchRenders,
+                    child: Container(
+                      width: 120,
+                      height: 120,
+                      child: RtcRemoteView.SurfaceView(
+                        uid: e,
+                      ),
+                    ),
+                  ),
+                )),
+              ),
+            ),
+          )
+        ],
+      ),
+    );
   }
 }
