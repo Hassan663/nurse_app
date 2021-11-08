@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:rtt_nurse_app/controllers/appointment/appointment_controller.dart';
+import 'package:rtt_nurse_app/view/ui/auth/rtt_nurse_forget_password.dart';
 import 'package:rtt_nurse_app/view/ui/homescreen/dashboard_screens/queue.dart';
 
 import 'dashboard_screens/capture_picture.dart';
@@ -22,7 +23,8 @@ class HomePage extends StatefulWidget {
   _HomePageState createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage>with AutomaticKeepAliveClientMixin {
+class _HomePageState extends State<HomePage>
+    with AutomaticKeepAliveClientMixin {
   PageController page = PageController(keepPage: true);
   final appointmentController = Get.put(AppointmentController());
 
@@ -96,33 +98,17 @@ class _HomePageState extends State<HomePage>with AutomaticKeepAliveClientMixin {
               ),
               SideMenuItem(
                 priority: 4,
-                title: 'Capture a Picture',
-                onTap: () {
-                  page.jumpToPage(4);
-                },
-                icon: Icons.camera_alt_outlined,
-              ),
-              SideMenuItem(
-                priority: 5,
                 title: 'Change Password',
                 onTap: () {
-                  page.jumpToPage(5);
+                  page.jumpToPage(4);
                 },
                 icon: Icons.change_circle,
               ),
               SideMenuItem(
-                priority: 6,
-                title: 'Upload Document',
-                onTap: () async {
-                  page.jumpToPage(6);
-                },
-                icon: Icons.cloud_upload_outlined,
-              ),
-              SideMenuItem(
-                priority: 7,
+                priority: 5,
                 title: 'Help',
                 onTap: () async {
-                  page.jumpToPage(7);
+                  page.jumpToPage(5);
                 },
                 icon: Icons.help_outline,
               ),
@@ -132,13 +118,11 @@ class _HomePageState extends State<HomePage>with AutomaticKeepAliveClientMixin {
             child: PageView(
               controller: page,
               children: [
-                HomeDashboard(),
+                HommeDashBoard(),
                 Queue(),
                 SetAvailability(),
                 UpdateAccount(),
-                CapturePicture(),
-                ChangePassword(),
-                UploadDocument(),
+                ForgotPassword(),
                 Help()
               ],
             ),
