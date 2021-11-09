@@ -487,6 +487,7 @@ class Help extends StatelessWidget {
                               width: Get.width,
                               child: TextField(
                                 controller: _.controller,
+                                readOnly: true,
                                 decoration:
                                     InputDecoration(hintText: 'Channel ID'),
                                 onChanged: (text) {
@@ -504,9 +505,12 @@ class Help extends StatelessWidget {
                                   Expanded(
                                     flex: 1,
                                     child: ElevatedButton(
-                                      onPressed: _.isJoined
-                                          ? _.leaveChannel
-                                          : _.joinChannel,
+                                      onPressed: (){
+                                        _.isJoined
+                                            ? _.leaveChannel()
+                                            : _.joinChannel();
+                                      },
+
                                       child: Text(
                                           '${_.isJoined ? 'Leave' : 'Join'} channel'),
                                     ),
