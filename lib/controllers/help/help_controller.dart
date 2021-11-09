@@ -2,6 +2,8 @@
 import 'dart:developer';
 
 import 'package:agora_rtc_engine/rtc_engine.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -15,11 +17,24 @@ class HelpController extends GetxController {
   bool isJoined = false, switchCamera = true, switchRender = true;
   List<int> remoteUid = [];
   TextEditingController controller = TextEditingController();
+  TextEditingController message = TextEditingController();
+
+  FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+  final firestoreInstance = FirebaseFirestore.instance.collection("Chat");
+  final chatgroup = FirebaseFirestore.instance.collection("ChatGroup");
+  var id;
+  List messagelist = [];
 
   bool isLoading = true;
 
   @override
   void onInit() async {
+    if (Get.arguments != null) {
+      print(id);
+      id = "12";
+      // id = Get.arguments;
+      getMessage(id.toString());
+    }
     await initEngine();
     update();
     super.onInit();
@@ -36,6 +51,45 @@ class HelpController extends GetxController {
   void onClose() {
     engine.destroy();
     super.onClose();
+  }
+
+  Future<void> getMessage(String rid) async {
+    print(rid);
+    Stream<QuerySnapshot> streambodytarget = firestoreInstance
+        .where("docId", isEqualTo: rid)
+        .orderBy("createdAt", descending: true)
+        .snapshots();
+    await streambodytarget.forEach((e) {
+      messagelist.clear();
+      for (var value in e.docs) {
+        print(value.data());
+        messagelist.add(value.data());
+      }
+      update();
+    }).catchError((e) {
+      print(e);
+
+    });
+  }
+  Future<void> sendmessage() async {
+    print(id);
+    await firestoreInstance.add({
+      "senderid": firebaseAuth.currentUser!.uid,
+      "type": "text",
+      "docId": "12",
+      // "docId": id,
+      "message": message.text,
+      "sendername": "Hamza",
+      "createdAt": Timestamp.now(),
+    }).then((value) {
+      print(id);
+      chatgroup.doc(id).update({
+        "recent" : message.text,
+      }).then((value){
+        message.clear();
+        print("message send");
+      });
+    });
   }
 
   initEngine() async {
