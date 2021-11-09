@@ -9,40 +9,18 @@ class Header extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(children: [
       Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          Column(
-            // mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Welcome Nurse!',
-                style: TextStyle(fontWeight: FontWeight.w700, fontSize: 25.sp),
-              ),
-              SizedBox(
-                height: 5.h,
-              ),
-              Text('Have a nice day ahead.'),
-            ],
+         
+          CircleAvatar(
+            child:
+                IconButton(onPressed: () {}, icon: Icon(Icons.person)),
           ),
-          Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  CircleAvatar(
-                    child:
-                        IconButton(onPressed: () {}, icon: Icon(Icons.person)),
-                  ),
-                  IconButton(
-                      onPressed: () {},
-                      icon: Icon(Icons.notifications_none_outlined)),
-                  IconButton(
-                      onPressed: () {}, icon: Icon(Icons.power_settings_new)),
-                ],
-              )
-            ],
-          )
+          IconButton(
+              onPressed: () {},
+              icon: Icon(Icons.notifications_none_outlined)),
+          IconButton(
+              onPressed: () {}, icon: Icon(Icons.power_settings_new))
         ],
       )
     ]);

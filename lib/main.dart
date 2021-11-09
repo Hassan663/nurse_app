@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:rtt_nurse_app/view/ui/homescreen/home_screen.dart';
 import 'controllers/authentication/auth_controller.dart';
 import 'view/ui/auth/auth_decider.dart';
 
@@ -25,7 +26,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        home: AuthDecider(),
+        home: HomePage(),
       ),
       designSize: const Size(1920, 1080),
     );

@@ -12,6 +12,8 @@ final RedText = GoogleFonts.inter(
   color: Color(0xfffc6359),
   fontSize: 14.0,
 );
+final WhiteTitle1Text = GoogleFonts.inter(
+    fontSize: 25, fontWeight: FontWeight.w500, color: Colors.white);
 
 final WhiteText = GoogleFonts.inter(fontSize: 17, fontWeight: FontWeight.w600,color:Colors.white);
 

@@ -72,10 +72,9 @@ class _SetAvailabilityState extends State<SetAvailability>
 
     List<Meeting> _getDataSource() {
       final DateTime today = DateTime.now();
-      final DateTime startTime = DateTime(today.year, today.month, today.day,
-          startingTimeRange.hour, startingTimeRange.minute, 0);
-      final DateTime endTime = DateTime(today.year, today.month, today.day,
-          endingTimeRange.hour, endingTimeRange.minute, 0);
+      final DateTime startTime =
+          DateTime(today.year, today.month, today.day, 1, 0, 0);
+      final DateTime endTime = startTime.add(const Duration(hours: 2));
       meetings.add(Meeting(
         startTime,
         endTime,
@@ -83,42 +82,42 @@ class _SetAvailabilityState extends State<SetAvailability>
       return meetings;
     }
 
-    void _addAppointments() {
-      _shiftCollection = <Appointment>[];
-      final Random random = Random();
-      for (int i = 0; i < _employeeCollection.length; i++) {
-        final List<String> _employeeIds = <String>[
-          _employeeCollection[i].id.toString()
-        ];
-        if (i == _employeeCollection.length - 1) {
-          int index = random.nextInt(5);
-          index = index == i ? index + 1 : index;
-          _employeeIds.add(_employeeCollection[index].id.toString());
-        }
+    // void _addAppointments() {
+    //   _shiftCollection = <Appointment>[];
+    //   final Random random = Random();
+    //   for (int i = 0; i < _employeeCollection.length; i++) {
+    //     final List<String> _employeeIds = <String>[
+    //       _employeeCollection[i].id.toString()
+    //     ];
+    //     if (i == _employeeCollection.length - 1) {
+    //       int index = random.nextInt(5);
+    //       index = index == i ? index + 1 : index;
+    //       _employeeIds.add(_employeeCollection[index].id.toString());
+    //     }
 
-        for (int k = 0; k < 365; k++) {
-          if (_employeeIds.length > 1 && k % 2 == 0) {
-            continue;
-          }
-          for (int j = 0; j < 2; j++) {
-            final DateTime date = DateTime.now().add(Duration(days: k + j));
-            int startHour = 9 + random.nextInt(6);
-            startHour =
-                startHour >= 13 && startHour <= 14 ? startHour + 1 : startHour;
-            final DateTime _shiftStartTime =
-                DateTime(date.year, date.month, date.day, startHour, 0, 0);
-            _shiftCollection.add(Appointment(
-                startTime: _shiftStartTime,
-                endTime: _shiftStartTime.add(const Duration(hours: 1)),
-                subject: _subjectCollection[random.nextInt(8)],
-                color: _colorCollection[random.nextInt(8)],
-                startTimeZone: '',
-                endTimeZone: '',
-                resourceIds: _employeeIds));
-          }
-        }
-      }
-    }
+    //     for (int k = 0; k < 365; k++) {
+    //       if (_employeeIds.length > 1 && k % 2 == 0) {
+    //         continue;
+    //       }
+    //       for (int j = 0; j < 2; j++) {
+    //         final DateTime date = DateTime.now().add(Duration(days: k + j));
+    //         int startHour = 9 + random.nextInt(6);
+    //         startHour =
+    //             startHour >= 13 && startHour <= 14 ? startHour + 1 : startHour;
+    //         final DateTime _shiftStartTime =
+    //             DateTime(date.year, date.month, date.day, startHour, 0, 0);
+    //         _shiftCollection.add(Appointment(
+    //             startTime: _shiftStartTime,
+    //             endTime: _shiftStartTime.add(const Duration(hours: 1)),
+    //             subject: _subjectCollection[random.nextInt(8)],
+    //             color: _colorCollection[random.nextInt(8)],
+    //             startTimeZone: '',
+    //             endTimeZone: '',
+    //             resourceIds: _employeeIds));
+    //       }
+    //     }
+    //   }
+    // }
 
     List months = [
       'jan',
@@ -164,6 +163,20 @@ class _SetAvailabilityState extends State<SetAvailability>
 
         _rangeSelectionMode = RangeSelectionMode.toggledOn;
       });
+    }
+
+    _AppointmentDataSource _getCalendarDataSource() {
+      List<Appointment> appointments = <Appointment>[];
+      appointments.add(Appointment(
+        startTime: DateTime.now(),
+        endTime: DateTime.now().add(Duration(minutes: 10)),
+        subject: 'Meeting',
+        color: Colors.blue,
+        startTimeZone: '',
+        endTimeZone: '',
+      ));
+
+      return _AppointmentDataSource(appointments);
     }
 
     return SafeArea(
@@ -315,6 +328,10 @@ class _SetAvailabilityState extends State<SetAvailability>
                                   GestureDetector(
                                     onTap: () {
                                       showTimeRangePicker(
+                                        autoAdjustLabels: true,
+                                        rotateLabels: true,
+                                        ticksLength: 100,
+                                        //ticksWidth: 300,
                                         context: context,
                                         start: TimeOfDay(hour: 22, minute: 9),
                                         onStartChange: (start) {
@@ -330,12 +347,10 @@ class _SetAvailabilityState extends State<SetAvailability>
                                               "${end.hourOfPeriod}:${end.minute == 0 ? "00" : end.minute} ${end.period.index == 0 ? "AM" : "PM"}";
                                           endingTimeRange = end;
                                         },
-                                        interval: Duration(minutes: 30),
+                                        interval: Duration(minutes: 5),
                                         use24HourFormat: false,
-                                        padding: 30,
-                                        strokeWidth: 20,
-                                        handlerRadius: 14,
-                                        strokeColor: Colors.orange,
+
+                                        strokeColor: Colors.red,
                                         handlerColor: Colors.orange[700],
                                         selectedColor: Colors.amber,
                                         backgroundColor:
@@ -358,13 +373,13 @@ class _SetAvailabilityState extends State<SetAvailability>
                                               length: 8,
                                               text: e.value);
                                         }).toList(),
-                                        labelOffset: -30,
+                                        //labelOffset: -30,
                                         labelStyle: TextStyle(
                                             fontSize: 22,
                                             color: Colors.grey,
                                             fontWeight: FontWeight.bold),
                                         timeTextStyle: TextStyle(
-                                            color: Colors.orange[700],
+                                            color: Colors.red[700],
                                             fontSize: 24,
                                             fontStyle: FontStyle.italic,
                                             fontWeight: FontWeight.bold),
@@ -455,6 +470,10 @@ class _SetAvailabilityState extends State<SetAvailability>
                                     padding: EdgeInsets.only(
                                         bottom: 10.h, top: 10.h),
                                     child: CircularButtons(
+                                      textColor: Colors.white,
+                                      textStyle: TextStyle(
+                                          fontSize: 17,
+                                          fontWeight: FontWeight.w600),
                                       backgroundColor: const Color(0xfffc6359),
                                       borderColor: const Color(0xfffc6359),
                                       text: "Save",
@@ -462,27 +481,6 @@ class _SetAvailabilityState extends State<SetAvailability>
                                       width: width * 0.1,
                                       onPressed: () {
                                         setState(() {
-                                          // final DateTime startTime = DateTime(
-                                          //     _focusedDay.year,
-                                          //     _focusedDay.month,
-                                          //     _focusedDay.day,
-                                          //     startingTimeRange.hour,
-                                          //     startingTimeRange.minute,
-                                          //     0);
-                                          // final DateTime endTime = DateTime(
-                                          //     _focusedDay.year,
-                                          //     _focusedDay.month,
-                                          //     _focusedDay.day,
-                                          //     endingTimeRange.hour,
-                                          //     endingTimeRange.minute,
-                                          //     0);
-
-                                          // meetings.add(Meeting(
-                                          //   startTime,
-                                          //   endTime,
-                                          // ));
-                                          // // notifyListeners();
-
                                           Slots s = Slots(
                                               startSlot: availablefromController
                                                   .text
@@ -496,11 +494,111 @@ class _SetAvailabilityState extends State<SetAvailability>
                                           availablefromController.clear();
                                           availabletoController.clear();
                                         });
+                                        showDialog(
+                                            context: context,
+                                            builder: (BuildContext context) {
+                                              return AlertDialog(
+                                                  shape: RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.all(
+                                                              Radius.circular(
+                                                                  20.0))),
+                                                  backgroundColor: Colors.white,
+                                                  content: Container(
+                                                    height: 200,
+                                                    width: 400,
+                                                    child: Column(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceAround,
+                                                      children: [
+                                                        Row(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .center,
+                                                          children: [
+                                                            Text(
+                                                              'Confirm this time availability',
+                                                              style: TextStyle(
+                                                                  color:
+                                                                      fButtonColor,
+                                                                  fontSize: 25,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                        Row(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .spaceEvenly,
+                                                          children: [
+                                                            CircularButtons(
+                                                                backgroundColor:
+                                                                    const Color(
+                                                                        0xff4F8484),
+                                                                borderColor:
+                                                                    const Color(
+                                                                        0xff4F8484),
+                                                                text: "Yes",
+                                                                height: 50,
+                                                                width:
+                                                                    width * 0.1,
+                                                                textColor:
+                                                                    Colors
+                                                                        .white,
+                                                                textStyle:
+                                                                    WhiteText,
+                                                                onPressed: () {
+                                                                  print(
+                                                                      "length : ${authController.selectedSlot.length}");
+
+                                                                  Database()
+                                                                      .createAppoitmentInDatabase(
+                                                                    Schedule(
+                                                                      date: _selectedDay ==
+                                                                              null
+                                                                          ? DateTime
+                                                                              .now()
+                                                                          : _selectedDay,
+                                                                      slots: authController
+                                                                          .selectedSlot,
+                                                                    ),
+                                                                  );
+                                                                  authController
+                                                                          .selectedSlot =
+                                                                      <Slots>[]
+                                                                          .obs;
+                                                                  Get.back();
+                                                                }),
+                                                            CircularButtons(
+                                                              backgroundColor:
+                                                                  const Color(
+                                                                      0xfffc6359),
+                                                              borderColor:
+                                                                  const Color(
+                                                                      0xfffc6359),
+                                                              text: "No",
+                                                              height: 50,
+                                                              width:
+                                                                  width * 0.1,
+                                                              textColor:
+                                                                  Colors.white,
+                                                              textStyle:
+                                                                  WhiteText,
+                                                              onPressed: () {
+                                                                Navigator.pop(
+                                                                    context);
+                                                              },
+                                                            ),
+                                                          ],
+                                                        )
+                                                      ],
+                                                    ),
+                                                  ));
+                                            });
                                       },
-                                      textColor: Colors.white,
-                                      textStyle: TextStyle(
-                                          fontSize: 17,
-                                          fontWeight: FontWeight.w600),
                                     ),
                                   ),
                                 ],
@@ -529,44 +627,49 @@ class _SetAvailabilityState extends State<SetAvailability>
                               Radius.circular(5),
                             )),
                         child: SfCalendar(
-                          showCurrentTimeIndicator: true,
-                          showWeekNumber: true,
-                          showDatePickerButton: true,
-                          showNavigationArrow: true,
-
-                          // onTap: (CalendarTapDetails details) {
-
-                          // },
-                          blackoutDates: <DateTime>[
-                            DateTime(2021, 11, 10),
-                            DateTime(2021, 11, 15),
-                            DateTime(2021, 11, 20),
-                            DateTime(2021, 11, 22),
-                            DateTime(2021, 11, 24)
-                          ],
-                          blackoutDatesTextStyle: TextStyle(
-                              fontWeight: FontWeight.w400,
-                              fontSize: 13,
-                              color: Colors.red,
-                              decoration: TextDecoration.lineThrough),
+                          dataSource: MeetingDataSource(_getDataSource()),
+                          view: CalendarView.week,
+                          // showCurrentTimeIndicator: true,
+                          showWeekNumber: false,
+                          initialDisplayDate: DateTime.now(),
                           todayHighlightColor: Colors.red,
-                          initialDisplayDate: _focusedDay,
-                          cellBorderColor: Colors.grey,
-                          dataSource: _events,
-                          //   dataSource: MeetingDataSource(_getDataSource()),
-                          allowDragAndDrop: false,
-                          view: CalendarView.month,
-                          firstDayOfWeek: 4,
-                          selectionDecoration: BoxDecoration(
-                            color: Colors.transparent,
-                            border: Border.all(color: Colors.red, width: 2),
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(4)),
-                            shape: BoxShape.rectangle,
-                          ),
-                          cellEndPadding: 5,
-                          monthViewSettings:
-                              MonthViewSettings(appointmentDisplayCount: 2),
+
+                          // showDatePickerButton: true,
+                          // showNavigationArrow: true,
+
+                          // // onTap: (CalendarTapDetails details) {
+
+                          // // },
+                          // blackoutDates: <DateTime>[
+                          //   DateTime(2021, 11, 10),
+                          //   DateTime(2021, 11, 15),
+                          //   DateTime(2021, 11, 20),
+                          //   DateTime(2021, 11, 22),
+                          //   DateTime(2021, 11, 24)
+                          // ],
+                          // blackoutDatesTextStyle: TextStyle(
+                          //     fontWeight: FontWeight.w400,
+                          //     fontSize: 13,
+                          //     color: Colors.red,
+                          //     decoration: TextDecoration.lineThrough),
+                          // todayHighlightColor: Colors.red,
+                          // initialDisplayDate: _focusedDay,
+                          // cellBorderColor: Colors.grey,
+                          // dataSource: _events,
+                          // //   dataSource: MeetingDataSource(_getDataSource()),
+                          // allowDragAndDrop: false,
+                          // view: CalendarView.month,
+                          // firstDayOfWeek: 4,
+                          // selectionDecoration: BoxDecoration(
+                          //   color: Colors.transparent,
+                          //   border: Border.all(color: Colors.red, width: 2),
+                          //   borderRadius:
+                          //       const BorderRadius.all(Radius.circular(4)),
+                          //   shape: BoxShape.rectangle,
+                          // ),
+                          // cellEndPadding: 5,
+                          // monthViewSettings:
+                          //     MonthViewSettings(appointmentDisplayCount: 2),
                           // monthViewSettings: MonthViewSettings(
                           //     appointmentDisplayMode:
                           //         MonthAppointmentDisplayMode.appointment),
@@ -578,222 +681,222 @@ class _SetAvailabilityState extends State<SetAvailability>
                   ],
                 ),
                 Spacer(),
-                Padding(
-                  padding:
-                      EdgeInsets.symmetric(vertical: 50.h, horizontal: 400.w),
-                  child: CircularButtons(
-                    backgroundColor: const Color(0xfffc6359),
-                    borderColor: const Color(0xfffc6359),
-                    text: "Set Availability",
-                    height: 50,
-                    width: width * 0.3,
-                    onPressed: () {
-                      showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return AlertDialog(
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.all(
-                                        Radius.circular(20.0))),
-                                backgroundColor: Colors.white,
-                                content: Container(
-                                  height: 200,
-                                  width: 400,
-                                  child: Column(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceAround,
-                                    children: [
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Text(
-                                            'Confirm this time availability',
-                                            style: TextStyle(
-                                                color: fButtonColor,
-                                                fontSize: 25,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                        ],
-                                      ),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceEvenly,
-                                        children: [
-                                          CircularButtons(
-                                              backgroundColor:
-                                                  const Color(0xff4F8484),
-                                              borderColor:
-                                                  const Color(0xff4F8484),
-                                              text: "Yes",
-                                              height: 50,
-                                              width: width * 0.1,
-                                              textColor: Colors.white,
-                                              textStyle: WhiteText,
-                                              onPressed: () {
-                                                print(
-                                                    "length : ${authController.selectedSlot.length}");
+                // Padding(
+                //   padding:
+                //       EdgeInsets.symmetric(vertical: 50.h, horizontal: 400.w),
+                //   child: CircularButtons(
+                //     backgroundColor: const Color(0xfffc6359),
+                //     borderColor: const Color(0xfffc6359),
+                //     text: "Set Availability",
+                //     height: 50,
+                //     width: width * 0.3,
+                //     onPressed: () {
+                //       showDialog(
+                //           context: context,
+                //           builder: (BuildContext context) {
+                //             return AlertDialog(
+                //                 shape: RoundedRectangleBorder(
+                //                     borderRadius: BorderRadius.all(
+                //                         Radius.circular(20.0))),
+                //                 backgroundColor: Colors.white,
+                //                 content: Container(
+                //                   height: 200,
+                //                   width: 400,
+                //                   child: Column(
+                //                     mainAxisAlignment:
+                //                         MainAxisAlignment.spaceAround,
+                //                     children: [
+                //                       Row(
+                //                         mainAxisAlignment:
+                //                             MainAxisAlignment.center,
+                //                         children: [
+                //                           Text(
+                //                             'Confirm this time availability',
+                //                             style: TextStyle(
+                //                                 color: fButtonColor,
+                //                                 fontSize: 25,
+                //                                 fontWeight: FontWeight.bold),
+                //                           ),
+                //                         ],
+                //                       ),
+                //                       Row(
+                //                         mainAxisAlignment:
+                //                             MainAxisAlignment.spaceEvenly,
+                //                         children: [
+                //                           CircularButtons(
+                //                               backgroundColor:
+                //                                   const Color(0xff4F8484),
+                //                               borderColor:
+                //                                   const Color(0xff4F8484),
+                //                               text: "Yes",
+                //                               height: 50,
+                //                               width: width * 0.1,
+                //                               textColor: Colors.white,
+                //                               textStyle: WhiteText,
+                //                               onPressed: () {
+                //                                 print(
+                //                                     "length : ${authController.selectedSlot.length}");
 
-                                                Database()
-                                                    .createAppoitmentInDatabase(
-                                                  Schedule(
-                                                    date: _selectedDay == null
-                                                        ? DateTime.now()
-                                                        : _selectedDay,
-                                                    slots: authController
-                                                        .selectedSlot,
-                                                  ),
-                                                );
-                                                authController.selectedSlot =
-                                                    <Slots>[].obs;
-                                                Get.back();
-                                              }),
-                                          CircularButtons(
-                                            backgroundColor:
-                                                const Color(0xfffc6359),
-                                            borderColor:
-                                                const Color(0xfffc6359),
-                                            text: "No",
-                                            height: 50,
-                                            width: width * 0.1,
-                                            textColor: Colors.white,
-                                            textStyle: WhiteText,
-                                            onPressed: () {
-                                              Navigator.pop(context);
-                                            },
-                                          ),
-                                        ],
-                                      )
-                                    ],
-                                  ),
-                                ));
-                            // showDialog(
-                            //     context: context,
-                            //     builder: (BuildContext context) {
-                            //       return AlertDialog(
-                            //           shape: RoundedRectangleBorder(
-                            //               borderRadius: BorderRadius.all(
-                            //                   Radius.circular(20.0))),
-                            //           backgroundColor: Colors.white,
-                            //           content: Container(
-                            //             height: 200,
-                            //             width: 200,
-                            //             child: Column(
-                            //               mainAxisAlignment:
-                            //                   MainAxisAlignment.spaceAround,
-                            //               children: [
-                            //                 Text(
-                            //                   'Assesment',
-                            //                   style: TextStyle(
-                            //                       color: fLabelTextColor,
-                            //                       fontSize: 25,
-                            //                       fontWeight: FontWeight.bold),
-                            //                 ),
-                            //                 //SizedBox(height: 5.h),
-                            //                 Text(
-                            //                   "Please indicate the result of the test",
-                            //                   style: GoogleFonts.inter(
-                            //                       fontSize: 18,
-                            //                       fontStyle: FontStyle.normal,
-                            //                       fontWeight: FontWeight.w600,
-                            //                       color: fButtonTextColor),
-                            //                 ),
-                            //                 Row(
-                            //                   mainAxisAlignment:
-                            //                       MainAxisAlignment.spaceAround,
-                            //                   children: [
-                            //                     Icon(
-                            //                       Icons.add_circle,
-                            //                       color: fButtonColor,
-                            //                       size: 50,
-                            //                     ),
-                            //                     Icon(
-                            //                       Icons.remove_circle,
-                            //                       color: fButtonColor,
-                            //                       size: 50,
-                            //                     ),
-                            //                   ],
-                            //                 ),
-                            //                 Padding(
-                            //                   padding: const EdgeInsets.only(
-                            //                     left: 40,
-                            //                     right: 40,
-                            //                   ),
-                            //                   child: Row(
-                            //                     mainAxisAlignment:
-                            //                         MainAxisAlignment.spaceBetween,
-                            //                     children: [
-                            //                       ElevatedButton(
-                            //                           onPressed: () {
-                            //                             print(
-                            //                                 "length : ${authController.selectedSlot.length}");
-                            //                             Database()
-                            //                                 .createAppoitmentInDatabase(
-                            //                               Schedule(
-                            //                                 date: _selectedDay == null
-                            //                                     ? DateTime.now()
-                            //                                     : _selectedDay,
-                            //                                 slots: authController
-                            //                                     .selectedSlot,
-                            //                               ),
-                            //                             );
-                            //                             Get.back();
-                            //                           },
-                            //                           child: Text(
-                            //                             "Confirm",
-                            //                             style: GoogleFonts.inter(
-                            //                                 fontSize: 15.sp,
-                            //                                 fontStyle:
-                            //                                     FontStyle.normal,
-                            //                                 fontWeight:
-                            //                                     FontWeight.w500,
-                            //                                 color: Colors.white),
-                            //                           ),
-                            //                           style: ElevatedButton.styleFrom(
-                            //                               fixedSize: Size(140, 40),
-                            //                               primary: fButtonColor,
-                            //                               shape:
-                            //                                   RoundedRectangleBorder(
-                            //                                       borderRadius:
-                            //                                           BorderRadius
-                            //                                               .circular(
-                            //                                                   20)))),
-                            //                       ElevatedButton(
-                            //                           onPressed: () {
-                            //                             Navigator.of(context).pop();
-                            //                           },
-                            //                           child: Text(
-                            //                             "Cancel",
-                            //                             style: GoogleFonts.inter(
-                            //                                 fontSize: 15.sp,
-                            //                                 fontStyle:
-                            //                                     FontStyle.normal,
-                            //                                 fontWeight:
-                            //                                     FontWeight.w500,
-                            //                                 color: Colors.white),
-                            //                           ),
-                            //                           style: ElevatedButton.styleFrom(
-                            //                               fixedSize: Size(140, 40),
-                            //                               primary: fButtonColor,
-                            //                               shape:
-                            //                                   RoundedRectangleBorder(
-                            //                                       borderRadius:
-                            //                                           BorderRadius
-                            //                                               .circular(
-                            //                                                   20)))),
-                            //                     ],
-                            //                   ),
-                            //                 ),
-                            //               ],
-                            //             ),
-                            //           ));
-                          });
-                    },
-                    textColor: Colors.white,
-                    textStyle:
-                        TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
-                  ),
-                ),
+                //                                 Database()
+                //                                     .createAppoitmentInDatabase(
+                //                                   Schedule(
+                //                                     date: _selectedDay == null
+                //                                         ? DateTime.now()
+                //                                         : _selectedDay,
+                //                                     slots: authController
+                //                                         .selectedSlot,
+                //                                   ),
+                //                                 );
+                //                                 authController.selectedSlot =
+                //                                     <Slots>[].obs;
+                //                                 Get.back();
+                //                               }),
+                //                           CircularButtons(
+                //                             backgroundColor:
+                //                                 const Color(0xfffc6359),
+                //                             borderColor:
+                //                                 const Color(0xfffc6359),
+                //                             text: "No",
+                //                             height: 50,
+                //                             width: width * 0.1,
+                //                             textColor: Colors.white,
+                //                             textStyle: WhiteText,
+                //                             onPressed: () {
+                //                               Navigator.pop(context);
+                //                             },
+                //                           ),
+                //                         ],
+                //                       )
+                //                     ],
+                //                   ),
+                //                 ));
+                //             // showDialog(
+                //             //     context: context,
+                //             //     builder: (BuildContext context) {
+                //             //       return AlertDialog(
+                //             //           shape: RoundedRectangleBorder(
+                //             //               borderRadius: BorderRadius.all(
+                //             //                   Radius.circular(20.0))),
+                //             //           backgroundColor: Colors.white,
+                //             //           content: Container(
+                //             //             height: 200,
+                //             //             width: 200,
+                //             //             child: Column(
+                //             //               mainAxisAlignment:
+                //             //                   MainAxisAlignment.spaceAround,
+                //             //               children: [
+                //             //                 Text(
+                //             //                   'Assesment',
+                //             //                   style: TextStyle(
+                //             //                       color: fLabelTextColor,
+                //             //                       fontSize: 25,
+                //             //                       fontWeight: FontWeight.bold),
+                //             //                 ),
+                //             //                 //SizedBox(height: 5.h),
+                //             //                 Text(
+                //             //                   "Please indicate the result of the test",
+                //             //                   style: GoogleFonts.inter(
+                //             //                       fontSize: 18,
+                //             //                       fontStyle: FontStyle.normal,
+                //             //                       fontWeight: FontWeight.w600,
+                //             //                       color: fButtonTextColor),
+                //             //                 ),
+                //             //                 Row(
+                //             //                   mainAxisAlignment:
+                //             //                       MainAxisAlignment.spaceAround,
+                //             //                   children: [
+                //             //                     Icon(
+                //             //                       Icons.add_circle,
+                //             //                       color: fButtonColor,
+                //             //                       size: 50,
+                //             //                     ),
+                //             //                     Icon(
+                //             //                       Icons.remove_circle,
+                //             //                       color: fButtonColor,
+                //             //                       size: 50,
+                //             //                     ),
+                //             //                   ],
+                //             //                 ),
+                //             //                 Padding(
+                //             //                   padding: const EdgeInsets.only(
+                //             //                     left: 40,
+                //             //                     right: 40,
+                //             //                   ),
+                //             //                   child: Row(
+                //             //                     mainAxisAlignment:
+                //             //                         MainAxisAlignment.spaceBetween,
+                //             //                     children: [
+                //             //                       ElevatedButton(
+                //             //                           onPressed: () {
+                //             //                             print(
+                //             //                                 "length : ${authController.selectedSlot.length}");
+                //             //                             Database()
+                //             //                                 .createAppoitmentInDatabase(
+                //             //                               Schedule(
+                //             //                                 date: _selectedDay == null
+                //             //                                     ? DateTime.now()
+                //             //                                     : _selectedDay,
+                //             //                                 slots: authController
+                //             //                                     .selectedSlot,
+                //             //                               ),
+                //             //                             );
+                //             //                             Get.back();
+                //             //                           },
+                //             //                           child: Text(
+                //             //                             "Confirm",
+                //             //                             style: GoogleFonts.inter(
+                //             //                                 fontSize: 15.sp,
+                //             //                                 fontStyle:
+                //             //                                     FontStyle.normal,
+                //             //                                 fontWeight:
+                //             //                                     FontWeight.w500,
+                //             //                                 color: Colors.white),
+                //             //                           ),
+                //             //                           style: ElevatedButton.styleFrom(
+                //             //                               fixedSize: Size(140, 40),
+                //             //                               primary: fButtonColor,
+                //             //                               shape:
+                //             //                                   RoundedRectangleBorder(
+                //             //                                       borderRadius:
+                //             //                                           BorderRadius
+                //             //                                               .circular(
+                //             //                                                   20)))),
+                //             //                       ElevatedButton(
+                //             //                           onPressed: () {
+                //             //                             Navigator.of(context).pop();
+                //             //                           },
+                //             //                           child: Text(
+                //             //                             "Cancel",
+                //             //                             style: GoogleFonts.inter(
+                //             //                                 fontSize: 15.sp,
+                //             //                                 fontStyle:
+                //             //                                     FontStyle.normal,
+                //             //                                 fontWeight:
+                //             //                                     FontWeight.w500,
+                //             //                                 color: Colors.white),
+                //             //                           ),
+                //             //                           style: ElevatedButton.styleFrom(
+                //             //                               fixedSize: Size(140, 40),
+                //             //                               primary: fButtonColor,
+                //             //                               shape:
+                //             //                                   RoundedRectangleBorder(
+                //             //                                       borderRadius:
+                //             //                                           BorderRadius
+                //             //                                               .circular(
+                //             //                                                   20)))),
+                //             //                     ],
+                //             //                   ),
+                //             //                 ),
+                //             //               ],
+                //             //             ),
+                //             //           ));
+                //           });
+                //     },
+                //     textColor: Colors.white,
+                //     textStyle:
+                //         TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
+                //   ),
+                // ),
                 authController.selectedSlot.length != 0
                     ? Container(
                         height: 50,
@@ -851,5 +954,11 @@ class _DataSource extends CalendarDataSource {
   _DataSource(List<Appointment> source, List<CalendarResource> resourceColl) {
     appointments = source;
     resources = resourceColl;
+  }
+}
+
+class _AppointmentDataSource extends CalendarDataSource {
+  _AppointmentDataSource(List<Appointment> source) {
+    appointments = source;
   }
 }

@@ -29,6 +29,7 @@ dependencies:
   mask_text_input_formatter: ^2.0.0
   firebase_core: ^1.8.0
   firebase_auth: ^3.1.4
+  file_picker: ^4.2.0
   cloud_firestore: ^2.5.4
   shared_preferences:
   time_range_picker: ^2.0.1
