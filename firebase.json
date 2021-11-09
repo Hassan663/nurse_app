@@ -1,11 +1,16 @@
 {
   "hosting": {
-    "site": "covidtest-nurse-2432",
     "public": "build/web",
     "ignore": [
       "firebase.json",
       "**/.*",
       "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
     ]
   }
 }
