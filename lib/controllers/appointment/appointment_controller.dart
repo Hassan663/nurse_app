@@ -141,11 +141,20 @@ class AppointmentController extends GetxController {
   Future<void> addAppointment() async {
     isLoading = true;
     update();
+    final Timestamp d = Timestamp. fromDate(selectedDays!);
+    print("${d.toDate()}");
+    final DateTime today =DateTime.parse(d.toDate().toString());
+    String da = today.toString().split(' at').first;
+    String a = da.split(" ").first;
+    print("today $today");
+    print("today $da");
+    print("a $a");
 
     var data = nurseAppointment.doc();
     var docSnap = await data.get();
     data.set({
       "docId": docSnap.reference.id,
+      "adate" :a,
       "appointmentData" : selectedDays,
       "startappointmentTime" : availablefromController.text,
       "endappointmentTime" : availabletoController.text,
@@ -159,6 +168,8 @@ class AppointmentController extends GetxController {
           message: 'appointment Added Successfully',
           backgroundColor: snackBarSuccess);
     });
+    isLoading = false;
+    update();
   }
 
   Future<void> getAppoinment() async{
