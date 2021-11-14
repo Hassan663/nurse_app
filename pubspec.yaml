@@ -34,6 +34,7 @@ dependencies:
   shared_preferences:
   time_range_picker: ^2.0.1
   agora_rtc_engine: ^4.1.0-alpha.2
+  time_range: ^1.0.2
   permission_handler:
 
 dev_dependencies:

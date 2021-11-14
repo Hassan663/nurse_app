@@ -7,8 +7,10 @@ import 'package:rtt_nurse_app/constants/custom_snackbar.dart';
 import 'package:rtt_nurse_app/constants/rrt_colors.dart';
 import 'package:rtt_nurse_app/controllers/authentication/auth_controller.dart';
 import 'package:rtt_nurse_app/models/appointment/available_requests.dart';
+import 'package:rtt_nurse_app/utils/rrt_sizes.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:time_range/time_range.dart';
 
 class AppointmentController extends GetxController {
   var availableAppointments = <AvailableRequests>[].obs;
@@ -17,6 +19,7 @@ class AppointmentController extends GetxController {
 
 
   final nurseAppointment = FirebaseFirestore.instance.collection("NurseAppointment");
+
   FirebaseAuth firebaseAuth = FirebaseAuth.instance;
 
 
@@ -37,10 +40,6 @@ class AppointmentController extends GetxController {
   TimeOfDay selectedStartTime = TimeOfDay(hour: 13, minute: 10);
   TimeOfDay selectendingTimeRange = TimeOfDay.now();
 
-  var formatted = formatDate(DateTime.now(), [mm]);
-  var formatted1;
-  List<String> subjectCollection = <String>[];
-  List<Color> colorCollection = <Color>[];
   // List<Appointment> shiftCollection = <Appointment>[];
   List<CalendarResource> employeeCollection = <CalendarResource>[];
   List months = [];
@@ -48,6 +47,13 @@ class AppointmentController extends GetxController {
 
   List<Appointment> meeting = <Appointment>[];
   // DataSource? events;
+
+  // Time Range
+  TimeRangeResult? timeRange;
+  String starttime = "";
+  String endTime = "";
+
+  List slotlist = [];
 
   @override
   void onInit() {
@@ -67,6 +73,11 @@ class AppointmentController extends GetxController {
       'nov',
       'dec'
     ];
+    final defaultTimeRange = TimeRangeResult(
+      TimeOfDay(hour: 9, minute: 00),
+      TimeOfDay(hour: 17, minute: 00),
+    );
+    timeRange = defaultTimeRange;
     update();
     // availableAppointments.bindStream(AppointmentDatabase().getAllPost());
     super.onInit();
@@ -126,20 +137,9 @@ class AppointmentController extends GetxController {
   //   update();
   // }
 
-  void getCalendarDataSource() {
-    List<Appointment> appointments = <Appointment>[];
-    appointments.add(Appointment(
-      startTime: DateTime.now(),
-      endTime: DateTime.now().add(Duration(minutes: 10)),
-      subject: 'Meeting',
-      color: Colors.blue,
-      startTimeZone: '',
-      endTimeZone: '',
-    ));
-  }
-
-  Future<void> addAppointment() async {
+  Future<void> addAppointment(BuildContext c) async {
     isLoading = true;
+    slotlist.clear();
     update();
     final Timestamp d = Timestamp. fromDate(selectedDays!);
     print("${d.toDate()}");
@@ -150,34 +150,100 @@ class AppointmentController extends GetxController {
     print("today $da");
     print("a $a");
 
-    var data = nurseAppointment.doc();
-    var docSnap = await data.get();
-    data.set({
-      "docId": docSnap.reference.id,
-      "adate" :a,
-      "appointmentData" : selectedDays,
-      "startappointmentTime" : availablefromController.text,
-      "endappointmentTime" : availabletoController.text,
-      "nurseId" : firebaseAuth.currentUser!.uid
-    }).then((value){
-      isLoading = false;
-      update();
-      Get.back();
-      CustomSnackBar.showSnackBar(
-          title: "Success",
-          message: 'appointment Added Successfully',
-          backgroundColor: snackBarSuccess);
-    });
-    isLoading = false;
+
+    var lasth = TimeOfDay(hour: timeRange!.end.hour, minute: timeRange!.end.minute);
+
+
+    var hour = TimeOfDay(hour: timeRange!.start.hour, minute: timeRange!.start.minute);
+
+    while (hour.beforeOrEqual(lasth)) {
+      print("1st $hour cheeck ${hour.add(minutes: 30)}");
+      slotlist.add({
+        "check" : false,
+        "timeslot" : "Start Time : ${hour.format(c)} End Time : ${hour.add(minutes: 30).format(c)}"
+      });
+      // slotlist.add(
+      //     hour.hour == TimeOfDay.hoursPerDay
+      //     ? hour.replacing(hour: 0)
+      //     : hour
+      // );
+
+      // slotlist.add(
+      //     hour.hour == TimeOfDay.hoursPerDay ? hour.replacing(hour: 0) : hour);
+
+      hour = hour.add(minutes: 30);
+    }
     update();
+    slotlist.forEach((element) {
+      print("Check hours $element");
+    });
+
+    var checkdata = await nurseAppointment.where("nurseId" , isEqualTo: firebaseAuth.currentUser!.uid).where("adate" , isEqualTo: a).get();
+    print("${checkdata.docs.length}");
+    if(checkdata.docs.length == 0)
+      {
+        var data = nurseAppointment.doc();
+        var docSnap = await data.get();
+        data.set({
+          "docId": docSnap.reference.id,
+          "adate" :a,
+          "appointmentData" : selectedDays,
+          "startappointmentTime" : timeRange!.start.format(c),
+          "startappoinmenthour" : timeRange!.start.hour,
+          "startappoinmentMin" : timeRange!.start.minute,
+          "endappointmentTime" : timeRange!.end.format(c),
+          "endappoinmenthour" : timeRange!.end.hour,
+          "endappoinmentMin" : timeRange!.end.minute,
+          "nurseId" : firebaseAuth.currentUser!.uid,
+          "slots" : slotlist
+        }).then((value){
+          isLoading = false;
+          update();
+          Get.back();
+          CustomSnackBar.showSnackBar(
+              title: "Success",
+              message: 'appointment Added Successfully',
+              backgroundColor: snackBarSuccess);
+        });
+        isLoading = false;
+        update();
+      }
+    else
+      {
+        String doci = "";
+        checkdata.docs.forEach((element) {
+          doci = element['docId'];
+        });
+        update();
+        nurseAppointment.doc(doci).update({
+          "adate" :a,
+          "appointmentData" : selectedDays,
+          "startappointmentTime" : timeRange!.start.format(c),
+          "startappoinmenthour" : timeRange!.start.hour,
+          "startappoinmentMin" : timeRange!.start.minute,
+          "endappointmentTime" : timeRange!.end.format(c),
+          "endappoinmenthour" : timeRange!.end.hour,
+          "endappoinmentMin" : timeRange!.end.minute,
+        }).then((value){
+          isLoading = false;
+          update();
+          Get.back();
+          CustomSnackBar.showSnackBar(
+              title: "Success",
+              message: 'appointment Added Successfully',
+              backgroundColor: snackBarSuccess);
+        });
+        isLoading = false;
+        update();
+      }
+
   }
-
   Future<void> getAppoinment() async{
-
     Stream<QuerySnapshot> streambodytarget = nurseAppointment.where("nurseId" , isEqualTo: firebaseAuth.currentUser!.uid)
         .snapshots();
     await streambodytarget.forEach((e) {
       c.clear();
+      meeting.clear();
       for (var value in e.docs) {
         print(value.data());
         c.add(value.data());
@@ -185,11 +251,8 @@ class AppointmentController extends GetxController {
       update();
     }).catchError((e) {
       print(e);
-
     });
-
   }
-
 
   List<Appointment> setAppoinment()
   {
@@ -198,21 +261,14 @@ class AppointmentController extends GetxController {
       // var d = e.data()['appointmentData'];
       final Timestamp d = c[i]['appointmentData'];
       final DateTime today =DateTime.parse(d.toDate().toString());
-      String hourstring = c[i]['startappointmentTime'].toString().split(':').first;
-      String minnstring = c[i]['startappointmentTime'].toString().split(':').last;
-      String minnstring1 = minnstring.toString().split(" ").first;
-      int hour = int.parse(hourstring);
-      int min = int.parse(minnstring1);
+      int hour = int.parse(c[i]['startappoinmenthour'].toString());
+      int min = int.parse(c[i]['startappoinmentMin'].toString());
       print("Today $today");
       print("Time $hour");
       print("Min $min");
 
-
-      String hourstring1 = c[i]['endappointmentTime'].toString().split(':').first;
-      String minnstring13 = c[i]['endappointmentTime'].toString().split(':').last;
-      String minnstring2 = minnstring13.toString().split(" ").first;
-      int hour1 = int.parse(hourstring1);
-      int min1 = int.parse(minnstring2);
+      int hour1 = int.parse(c[i]['endappoinmenthour'].toString());
+      int min1 = int.parse(c[i]['endappoinmentMin'].toString());
       print("Today $today");
       print("Time $hour");
       print("Min $min");
