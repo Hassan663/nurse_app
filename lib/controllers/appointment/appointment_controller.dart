@@ -158,18 +158,17 @@ class AppointmentController extends GetxController {
 
     while (hour.beforeOrEqual(lasth)) {
       print("1st $hour cheeck ${hour.add(minutes: 30)}");
-      slotlist.add({
-        "check" : false,
-        "timeslot" : "Start Time : ${hour.format(c)} End Time : ${hour.add(minutes: 30).format(c)}"
-      });
+      // slotlist.add(
+      //   "Start Time : ${hour.format(c)} End Time : ${hour.add(minutes: 30).format(c)}"
+      // );
       // slotlist.add(
       //     hour.hour == TimeOfDay.hoursPerDay
       //     ? hour.replacing(hour: 0)
       //     : hour
       // );
 
-      // slotlist.add(
-      //     hour.hour == TimeOfDay.hoursPerDay ? hour.replacing(hour: 0) : hour);
+      slotlist.add(
+          hour.hour == TimeOfDay.hoursPerDay ? hour.replacing(hour: 0) : "${hour.format(c)}");
 
       hour = hour.add(minutes: 30);
     }
@@ -177,6 +176,8 @@ class AppointmentController extends GetxController {
     slotlist.forEach((element) {
       print("Check hours $element");
     });
+
+
 
     var checkdata = await nurseAppointment.where("nurseId" , isEqualTo: firebaseAuth.currentUser!.uid).where("adate" , isEqualTo: a).get();
     print("${checkdata.docs.length}");
@@ -195,7 +196,7 @@ class AppointmentController extends GetxController {
           "endappoinmenthour" : timeRange!.end.hour,
           "endappoinmentMin" : timeRange!.end.minute,
           "nurseId" : firebaseAuth.currentUser!.uid,
-          "slots" : slotlist
+          "slots" : slotlist,
         }).then((value){
           isLoading = false;
           update();
@@ -238,8 +239,10 @@ class AppointmentController extends GetxController {
       }
 
   }
-  Future<void> getAppoinment() async{
-    Stream<QuerySnapshot> streambodytarget = nurseAppointment.where("nurseId" , isEqualTo: firebaseAuth.currentUser!.uid)
+
+  Future<void> getAppoinment() async {
+    print("User id ${firebaseAuth.currentUser!.uid}");
+    Stream<QuerySnapshot> streambodytarget = nurseAppointment.where("nurseId" , isEqualTo: firebaseAuth.currentUser!.uid.toString())
         .snapshots();
     await streambodytarget.forEach((e) {
       c.clear();

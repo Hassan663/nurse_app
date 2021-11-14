@@ -2,17 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:rtt_nurse_app/constants/rrt_sizes.dart';
-import 'package:rtt_nurse_app/controllers/appointment/appointment_controller.dart';
 import 'package:rtt_nurse_app/controllers/queue/queue_controller.dart';
 import 'package:rtt_nurse_app/utils/rrt_colors.dart';
 import 'package:rtt_nurse_app/utils/rtt_textstyle.dart';
 import 'package:rtt_nurse_app/view/rrt_widgets/button.dart';
 import 'package:rtt_nurse_app/view/rrt_widgets/header.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:rtt_nurse_app/controllers/help/help_controller.dart';
-import 'package:agora_rtc_engine/rtc_local_view.dart' as RtcLocalView;
-import 'package:agora_rtc_engine/rtc_remote_view.dart' as RtcRemoteView;
-import 'package:rtt_nurse_app/widget/commontextfield.dart';
 
 
 class Queue extends StatelessWidget {
@@ -25,7 +20,8 @@ class Queue extends StatelessWidget {
         return SafeArea(
             child: Container(
                 child: getQueue(_),
-            ));
+            ),
+        );
       },
     );
   }
