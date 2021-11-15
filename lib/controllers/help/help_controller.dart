@@ -8,6 +8,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:rtt_nurse_app/constants/custom_snackbar.dart';
+import 'package:rtt_nurse_app/constants/rrt_colors.dart';
 import 'package:rtt_nurse_app/controllers/help/config.dart' as config;
 
 class HelpController extends GetxController {
@@ -25,11 +27,21 @@ class HelpController extends GetxController {
   FirebaseAuth firebaseAuth = FirebaseAuth.instance;
   final firestoreInstance = FirebaseFirestore.instance.collection("Chat");
   final chatgroup = FirebaseFirestore.instance.collection("ChatGroup");
+
+  final result = FirebaseFirestore.instance.collection("Result");
+
   List messagelist = [];
   var id = "12";
 
+  String patientId = "";
+
   @override
   void onInit() async{
+    if(Get.arguments != null)
+      {
+        patientId = Get.arguments;
+        update();
+      }
     controller = TextEditingController(text: channelId);
     // if (Get.arguments != null) {
     //   print(id);
@@ -53,6 +65,18 @@ class HelpController extends GetxController {
   void onClose() {
     engine.destroy();
     super.onClose();
+  }
+
+  Future<void>addResult(String report) async{
+    await result.add({
+      "patentId" : patientId,
+      "report " : report,
+    }).then((value) {
+      CustomSnackBar.showSnackBar(
+          title: "Success",
+          message: 'Response Send Successfully',
+          backgroundColor: snackBarSuccess);
+    });
   }
 
   initEngine() async {

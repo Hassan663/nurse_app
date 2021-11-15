@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:rtt_nurse_app/constants/custom_snackbar.dart';
 import 'package:rtt_nurse_app/constants/rrt_colors.dart';
 import 'package:rtt_nurse_app/controllers/help/help_controller.dart';
+import 'package:rtt_nurse_app/view/ui/homescreen/dashboard_screens/help.dart';
 
 class QueueController extends GetxController{
 
@@ -91,8 +92,9 @@ class QueueController extends GetxController{
           "nurseId" : FirebaseAuth.instance.currentUser!.uid
         }).then((value) {
           isLoading = true;
-          isSelected = false;
+          // isSelected = false;
           update();
+          Get.to(() => Help() , arguments: patientid);
         });
       }
     else
