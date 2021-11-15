@@ -6,6 +6,7 @@ class AuthModel {
   String? firstName;
   String? lastName;
   String? email;
+  String? status;
   String? imageUrl;
   Timestamp? createdAt;
   String? role;
@@ -15,6 +16,7 @@ class AuthModel {
       this.firstName,
       this.lastName,
       this.email,
+      this.status,
       this.imageUrl,
       this.createdAt,
       this.role});
@@ -27,5 +29,6 @@ class AuthModel {
     imageUrl = doc['imageUrl'];
     createdAt = doc['createdAt'];
     role = doc['role'];
+    status = doc['status'];
   }
 }

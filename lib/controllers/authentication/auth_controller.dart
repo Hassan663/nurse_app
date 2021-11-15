@@ -53,6 +53,7 @@ class AuthController extends GetxController {
             firstName: firstName,
             lastName: lastName,
             email: email.trim(),
+            status: "online",
             imageUrl: '',
             createdAt: Timestamp.now(),
             role: "Nurse");
