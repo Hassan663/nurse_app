@@ -139,6 +139,7 @@ class SetAvailability extends StatelessWidget {
                                                 _.focusedDays = focusedDay;
                                                 _.update();
                                                 print(_.selectedDays);
+                                                _.getAppoinment();
                                               }
                                             },
                                             onFormatChanged: (format) {
@@ -269,9 +270,9 @@ class SetAvailability extends StatelessWidget {
                                                 activeBackgroundColor:
                                                     Color(0xFF333A47),
                                                 firstTime: TimeOfDay(
-                                                    hour: 9, minute: 00),
+                                                    hour: 1, minute: 00),
                                                 lastTime: TimeOfDay(
-                                                    hour: 17, minute: 00),
+                                                    hour: 24, minute: 00),
                                                 initialRange: _.timeRange,
                                                 timeStep: 30,
                                                 timeBlock: 30,

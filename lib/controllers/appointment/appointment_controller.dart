@@ -74,8 +74,8 @@ class AppointmentController extends GetxController {
       'dec'
     ];
     final defaultTimeRange = TimeRangeResult(
-      TimeOfDay(hour: 9, minute: 00),
-      TimeOfDay(hour: 17, minute: 00),
+      TimeOfDay(hour: 1, minute: 00),
+      TimeOfDay(hour: 24, minute: 00),
     );
     timeRange = defaultTimeRange;
     update();
@@ -242,7 +242,16 @@ class AppointmentController extends GetxController {
 
   Future<void> getAppoinment() async {
     print("User id ${firebaseAuth.currentUser!.uid}");
+    final Timestamp d = Timestamp.fromDate(selectedDays!);
+    print("${d.toDate()}");
+    final DateTime today =DateTime.parse(d.toDate().toString());
+    String da = today.toString().split(' at').first;
+    String a = da.split(" ").first;
+    print("today $today");
+    print("today $da");
+    print("a $a");
     Stream<QuerySnapshot> streambodytarget = nurseAppointment.where("nurseId" , isEqualTo: firebaseAuth.currentUser!.uid.toString())
+        .where("adate" , isEqualTo: a)
         .snapshots();
     await streambodytarget.forEach((e) {
       c.clear();
